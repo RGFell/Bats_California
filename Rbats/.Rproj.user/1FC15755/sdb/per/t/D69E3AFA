@@ -1,0 +1,17 @@
+{
+    "contents" : "library(\"raster\", lib.loc=\"~/R/win-library/3.2\")\nlibrary(\"rasterVis\", lib.loc=\"~/R/win-library/3.2\")\nlibrary(\"maps\", lib.loc=\"~/R/win-library/3.2\")\nlibrary(\"maptools\", lib.loc=\"~/R/win-library/3.2\")\nlibrary(\"rgdal\", lib.loc=\"~/R/win-library/3.2\")\nbc <- readGDAL(\"C:/Users/usuario/Bats_California/layers/burn_canopy.asc\")\nbc<-raster (bc)\nplot(bc, breaks= c(0.5,1.5,2.5,3.5,4.5,5.5,6.5,7.5,256))\nbb <- readGDAL(\"C:/Users/usuario/Bats_California/layers/burn_basal.asc\")\nbb<-raster (bb)\nplot(bb)\nbs <- readGDAL(\"C:/Users/usuario/Bats_California/layers/burn_severity.asc\")\nbs<-raster (bs)\nplot(bs)\ntopo <- readGDAL(\"C:/Users/usuario/Bats_California/layers/plumastopo.asc\")\ntopo<-raster (topo)\nplot(topo)\nsummary(bs)\nburn <-brick(bc, bs, bb)\nplot (burn)\nlayerStats(burn, \"pearson\",na.rm=TRUE)",
+    "created" : 1430134535556.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1943595227",
+    "id" : "D69E3AFA",
+    "lastKnownWriteTime" : 1430134949,
+    "path" : "C:/Users/usuario/Bats_California/Rbats/unedited script.R",
+    "project_path" : "unedited script.R",
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "source_on_save" : false,
+    "type" : "r_source"
+}

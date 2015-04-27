@@ -1,0 +1,17 @@
+{
+    "contents" : "---\noutput: html_document\n---\n\n###Sampling Design\n#author: Derek Corcoran\n\n```{r setup, include=FALSE}\nknitr::opts_chunk$set(cache=TRUE)\n```\n\nFirst we load the spatial packages\n\n```{r}\nlibrary(\"raster\", lib.loc=\"~/R/win-library/3.2\")\nlibrary(\"rasterVis\", lib.loc=\"~/R/win-library/3.2\")\nlibrary(\"maps\", lib.loc=\"~/R/win-library/3.2\")\nlibrary(\"maptools\", lib.loc=\"~/R/win-library/3.2\")\nlibrary(\"rgdal\", lib.loc=\"~/R/win-library/3.2\")\n```\nread rasters\n\n```{r}\nbc <- readGDAL(\"C:/Users/usuario/Bats_California/layers/burn_canopy.asc\")\nbc<-raster (bc)\nplot(bc, breaks= c(0.5,1.5,2.5,3.5,4.5,5.5,6.5,7.5,256))\nbb <- readGDAL(\"C:/Users/usuario/Bats_California/layers/burn_basal.asc\")\nbb<-raster (bb)\nplot(bb)\nbs <- readGDAL(\"C:/Users/usuario/Bats_California/layers/burn_severity.asc\")\nbs<-raster (bs)\nplot(bs)\ntopo <- readGDAL(\"C:/Users/usuario/Bats_California/layers/plumastopo.asc\")\ntopo<-raster (topo)\nplot(topo)\nsummary(bs)\n```\n\n#Check for correlation between rasters\n\n```{r}\nburn <-brick(bc, bs, bb)\nplot (burn)\nlayerStats(burn, \"pearson\",na.rm=TRUE)\n```\n",
+    "created" : 1430094159914.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "361508904",
+    "id" : "3632EBFF",
+    "lastKnownWriteTime" : 1430135012,
+    "path" : "C:/Users/usuario/Bats_California/Rbats/Sampling Design.Rmd",
+    "project_path" : "Sampling Design.Rmd",
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "source_on_save" : false,
+    "type" : "r_markdown"
+}

@@ -1,0 +1,10 @@
+base
+sp
+raster
+lattice
+RColorBrewer
+latticeExtra
+rasterVis
+maps
+maptools
+rgdal
