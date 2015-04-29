@@ -1,0 +1,16 @@
+{
+    "contents" : "---\noutput: html_document\n---\n\n#Planification of bats survey project in Plumas National Forest\n###Author: \"Derek Corcoran\"\n###Last update `r Sys.Date() `\n\n```{r, echo=FALSE, warning=FALSE}\nlibrary(plan)\narrive <- as.POSIXct(\"2015-04-10\")\nmonth <- 28 * 86400\nyear <- 12 * month\nleave <- arrive + 1 * year\nstartRL <- arrive\nendRL <- arrive + 4 * month\nstartSD <- arrive\nendSD <- as.POSIXct(\"2015-05-01\")\nstartPW <- arrive\nendPW <- as.POSIXct(\"2015-05-12\")\nstartMFW <- as.POSIXct(\"2015-05-15\")\nendMFW <- startMFW + 0.5*month\nstartSFW <- as.POSIXct(\"2015-07-01\")\nendSFW <- startSFW + 2 * month\nstartSA <- startSFW + 1 * month\nendSA <- as.POSIXct(\"2015-10-5\")\nstartNASBR <- as.POSIXct(\"2015-10-26\")\nendNASBR <- as.POSIXct(\"2015-11-1\")\nstartRP <- as.POSIXct(\"2015-11-1\")\nendRP <- startRP +2*month\nstartRD <- endRP\nendRD <- leave\ngantt.bat <- as.gantt(key=1:9, c(\"Research literature\",\n                         \"Spatial design\",\n                         \"Paperwork\",\n                         \"May fieldwork\",\n                         \"Summer fieldwork\",\n                         \"Statistical Analisis\",\n                         \"NASBR Meeting\",\n                         \"Research paper\",\n                         \"Reasses design\"\n                         ),\n              c(startRL, startSD, startPW, startMFW, startSFW,\n                startSA, startNASBR , startRP, startRD),\n              c(endRL, endSD, endPW, endMFW, endSFW,\n                endSA, endNASBR, endRP, endRD),\n              done=rep(0, 7))\nplot(gantt.bat, xlim=c(arrive, leave))\n```\n\n",
+    "created" : 1430303801247.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3496753441",
+    "id" : "BFBA1F7C",
+    "lastKnownWriteTime" : 1430303897,
+    "path" : "C:/Users/usuario/Bats_California/layers/Gantt chart bats.Rmd",
+    "project_path" : null,
+    "properties" : {
+    },
+    "source_on_save" : false,
+    "type" : "r_markdown"
+}
