@@ -1,5 +1,5 @@
 ---
-output: pdf_document
+output: html_document
 ---
 
 #Planification of bats survey project in Plumas National Forest
@@ -48,7 +48,7 @@ plot(gantt.bat, xlim=c(arrive, leave))
 
 **Research literature:** Ongoing, I will keep on reading and updating about models, detectors and/or bat ecology until at least July the 31st
 
-**Spatial design:** Ongoing, the work done so far can be found [here](http://rpubs.com/derek_corcoran/bats_california), the first sampling design draft will be available on friday the 1st of may. For more information and scripts go [here](https://github.com/derek-corcoran-barrios/Bats_California)
+**Spatial design:** Ongoing, the work done so far can be found [here](http://rpubs.com/derek_corcoran/bats_california), the first sampling design draft will be available on friday the 1st of may. For more information and scripts go [here](https://github.com/derek-corcoran-barrios/Bats_California2)
 
 **Paperwork:** Ongoing,to be finished on May 10th, what is left to do, drivers licence, harassment seminar and purchase cards.
 

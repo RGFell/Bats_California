@@ -116,36 +116,11 @@ plot(AllLayers)
 Even though we shouldn't classify using 3 layers of such high classification we will use the RasterBrick of the three burn classifications to exemplify how we will divide the area into areas of similar characteristics.
 Here we will ask R to use kmeans to sort the area into 3 types of habitat using the abovementioned rasterbrick:
 
-```{r, echo=FALSE}
-valuetable <- getValues(burn)
-head(valuetable)
-km <- kmeans(na.omit(valuetable), centers = 3, iter.max = 100, nstart = 10)
-# create a blank raster with default values of 0
-rNA <- setValues(raster(burn), 0)
-for(i in 1:nlayers(burn)){
-  rNA[is.na(burn[[i]])] <- 1
-}
-# convert rNA to an integer vector
-rNA <- getValues(rNA)
-# convert valuetable to a data.frame
-valuetable <- as.data.frame(valuetable)
-# if rNA is a 0, assign the cluster value at that position
-valuetable$class[rNA==0] <- km$cluster
-# if rNA is a 1, assign an NA at that position
-valuetable$class[rNA==1] <- NA
-# create a blank raster
-classes <- raster(burn)
-# assign values from the 'class' column of valuetable
-classes <- setValues(classes, valuetable$class)
-plot(classes, legend=FALSE,col=c("dark green", "orange", "light blue"))
-```
-
 #now with every layer
 
 ```{r, echo=FALSE}
 valuetable2 <- getValues(AllLayers)
-head(valuetable2)
-valuetable2 <- data.frame(lapply(valuetable2, function(x) scale(x, center = FALSE, scale = max(x, na.rm = TRUE))))
+head(valuetable2) 
 summary(valuetable2)
 km <- kmeans(na.omit(valuetable2), centers = 5, iter.max = 100, nstart = 10)
 # create a blank raster with default values of 0
