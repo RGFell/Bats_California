@@ -1,0 +1,191 @@
+---
+output: html_document
+---
+
+#Sampling Design
+###author: Derek Corcoran
+####Last update: `r Sys.Date() `
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(cache=TRUE)
+```
+
+First we load the spatial packages
+
+```{r, message=FALSE, warning=FALSE}
+library("raster", lib.loc="~/R/win-library/3.2")
+library("rasterVis", lib.loc="~/R/win-library/3.2")
+library("maps", lib.loc="~/R/win-library/3.2")
+library("maptools", lib.loc="~/R/win-library/3.2")
+library("rgdal", lib.loc="~/R/win-library/3.2")
+```
+Then we read the needed rasters
+
+```{r, message=FALSE, warning=FALSE}
+PNF<- readGDAL("C:/Users/usuario/Bats_California/layers/PNF.asc")
+PNF<-raster (PNF)
+plot(PNF)
+bc <- readGDAL("C:/Users/usuario/Bats_California/layers/burn_canopy.asc")
+bc<-raster (bc)
+plot(bc)
+bb <- readGDAL("C:/Users/usuario/Bats_California/layers/burn_basal.asc")
+bb<-raster (bb)
+plot(bb)
+bs <- readGDAL("C:/Users/usuario/Bats_California/layers/burn_severity.asc")
+bs<-raster (bs)
+plot(bs)
+topo <- readGDAL("C:/Users/usuario/Bats_California/layers/plumastopo.asc")
+topo<-raster (topo)
+plot(topo)
+Vegetation_existing <- readGDAL("C:/Users/usuario/Bats_California/layers/Vegetation_existing.asc")
+Vegetation_existing<-raster (Vegetation_existing)
+plot(Vegetation_existing)
+FireReturnIntervalDeparture <- readGDAL("C:/Users/usuario/Bats_California/layers/FireReturnIntervalDeparture.asc")
+FireReturnIntervalDeparture<-raster (FireReturnIntervalDeparture)
+plot(FireReturnIntervalDeparture)
+TreatmentsStorrie <- readGDAL("C:/Users/usuario/Bats_California/layers/TreatmentsStorrie.asc")
+TreatmentsStorrie<-raster (TreatmentsStorrie)
+plot(TreatmentsStorrie)
+```
+
+#Change outlayers and extract NAs 
+
+In order to classify the raster we will get rid of unnecesary outlayers, and change NAs to 0
+
+```{r}
+df.bb <- data.frame(id=c(NA,1,2,3,4,5,6,7,255), v=c(0,1,2,3,4,5,6,7,8))
+bb1 <- subs(bb, df.bb,subswithNA=FALSE)
+df.bs <- data.frame(id=c(NA,1,2,3,4,255), v=c(0,1,2,3,4,5))
+bs1 <- subs(bs, df.bs,subswithNA=FALSE)
+df.bc <- data.frame(id=c(NA,1,2,3,4,5,255), v=c(0,1,2,3,4,5,6))
+bc1 <- subs(bc, df.bc,subswithNA=FALSE)
+```
+
+#Put all rasters in the same projection
+
+```{r}
+roads.v <- spTransform(roads.v, CRS("+proj=longlat +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +no_defs"))
+bb<-projectRaster(bb1, PNF)
+bs<-projectRaster(bs1, PNF)
+Vegetation_existing<-projectRaster(Vegetation_existing, PNF)
+FireReturnIntervalDeparture<-projectRaster(FireReturnIntervalDeparture, PNF)
+TreatmentsStorrie<-projectRaster(TreatmentsStorrie, PNF)
+
+```
+#Put them all in the same resolution and size
+
+```{r}
+bc<-resample(bc, PNF)
+bb<-resample(bb, PNF)
+bs<-resample(bs, PNF)
+Vegetation_existing<-resample(Vegetation_existing, PNF)
+FireReturnIntervalDeparture<-resample(FireReturnIntervalDeparture, PNF)
+TreatmentsStorrie<-resample(TreatmentsStorrie, PNF)
+topo<-resample(topo,PNF)
+```
+
+#Prepare a distance from river/road raster
+
+```{r}
+roads.v <- readOGR(dsn="C:/Users/usuario/Bats_California/layers",layer="Roads")
+roads.v <- spTransform(roads.v, CRS("+proj=longlat +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +no_defs"))
+plot(PNF)
+lines(roads.v)
+template <- PNF  # this will be the template
+template[] <- NA  # assigns all values as NA
+roads.r <- rasterize(roads.v, template, field=1)
+summary(roads.r)          # pixels crossed by a road have "1" 
+plot(roads.r, add=TRUE)
+```
+after rasterizing the roads we make the new raster
+```{r}
+roaddist.r <- distance(roads.r)
+class(roaddist.r)
+# Check:
+plot(roaddist.r)
+lines(roads.v)
+```
+#Check for correlation between rasters
+
+```{r}
+burn <- stack(bc1, bs1, bb1)
+AllLayers <-stack(topo,TreatmentsStorrie,FireReturnIntervalDeparture, Vegetation_existing, roaddist.r)
+plot (AllLayers, colNA="black")
+pairs(AllLayers)
+AllLayers[is.na(AllLayers)] <- 0
+plot(AllLayers)
+```
+
+#Clasification example
+
+Even though we shouldn't classify using 3 layers of such high classification we will use the RasterBrick of the three burn classifications to exemplify how we will divide the area into areas of similar characteristics.
+Here we will ask R to use kmeans to sort the area into 3 types of habitat using the abovementioned rasterbrick:
+
+```{r, echo=FALSE}
+valuetable <- getValues(burn)
+head(valuetable)
+km <- kmeans(na.omit(valuetable), centers = 3, iter.max = 100, nstart = 10)
+# create a blank raster with default values of 0
+rNA <- setValues(raster(burn), 0)
+for(i in 1:nlayers(burn)){
+  rNA[is.na(burn[[i]])] <- 1
+}
+# convert rNA to an integer vector
+rNA <- getValues(rNA)
+# convert valuetable to a data.frame
+valuetable <- as.data.frame(valuetable)
+# if rNA is a 0, assign the cluster value at that position
+valuetable$class[rNA==0] <- km$cluster
+# if rNA is a 1, assign an NA at that position
+valuetable$class[rNA==1] <- NA
+# create a blank raster
+classes <- raster(burn)
+# assign values from the 'class' column of valuetable
+classes <- setValues(classes, valuetable$class)
+plot(classes, legend=FALSE,col=c("dark green", "orange", "light blue"))
+```
+
+#now with every layer
+
+```{r, echo=FALSE}
+valuetable2 <- getValues(AllLayers)
+head(valuetable2)
+valuetable2 <- data.frame(lapply(valuetable2, function(x) scale(x, center = FALSE, scale = max(x, na.rm = TRUE))))
+summary(valuetable2)
+km <- kmeans(na.omit(valuetable2), centers = 5, iter.max = 100, nstart = 10)
+# create a blank raster with default values of 0
+rNA <- setValues(raster(AllLayers), 0)
+for(i in 1:nlayers(AllLayers)){
+  rNA[is.na(AllLayers[[i]])] <- 1
+}
+# convert rNA to an integer vector
+rNA <- getValues(rNA)
+# convert valuetable to a data.frame
+valuetable2 <- as.data.frame(valuetable2)
+# if rNA is a 0, assign the cluster value at that position
+valuetable2$class[rNA==0] <- km$cluster
+# if rNA is a 1, assign an NA at that position
+valuetable2$class[rNA==1] <- NA
+# create a blank raster
+classes <- raster(AllLayers)
+# assign values from the 'class' column of valuetable
+classes2 <- setValues(classes, valuetable2$class)
+plot(classes2, legend=TRUE)
+summary (classes2)
+```
+
+More info on how to do this clasification in *https://geoscripting-wur.github.io/AdvancedRasterAnalysis/*
+
+#Extract Random points from each habitat type
+
+```{r}
+set.seed(10)
+df.class.4 <- data.frame(id=c(1,2,3,4,5), v=c(NA,NA,NA,4,NA))
+class4 <- subs(classes2, df.class.4,subswithNA=FALSE)
+points4<-sampleRandom(class4,10, na.rm=TRUE, xy=TRUE)
+df.class.3 <- data.frame(id=c(1,2,3,4,5), v=c(NA,NA,3,NA,NA))
+class3 <- subs(classes2, df.class.3,subswithNA=FALSE)
+points3<-sampleRandom(class3,10, na.rm=TRUE, xy=TRUE)
+plot(classes2)
+points (points4, col= "black")
+points (points3, col= "red")
+```

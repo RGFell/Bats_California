@@ -1,5 +1,5 @@
 ---
-output: html_document
+output: pdf_document
 ---
 
 #Planification of bats survey project in Plumas National Forest
@@ -18,12 +18,12 @@ startSD <- arrive
 endSD <- as.POSIXct("2015-05-01")
 startPW <- arrive
 endPW <- as.POSIXct("2015-05-12")
-startMFW <- as.POSIXct("2015-05-15")
-endMFW <- startMFW + 0.5*month
-startSFW <- as.POSIXct("2015-07-01")
-endSFW <- startSFW + 2 * month
-startSA <- startSFW + 1 * month
+startFW <- as.POSIXct("2015-05-15")
+endFW <- startFW + 3 * month
+startSA <- startFW + 1 * month
 endSA <- as.POSIXct("2015-10-5")
+StartBW <- as.POSIXct ('2015-07-01')
+endBW <- as.POSIXct("2015-07-31")
 startNASBR <- as.POSIXct("2015-10-26")
 endNASBR <- as.POSIXct("2015-11-1")
 startRP <- as.POSIXct("2015-11-1")
@@ -33,18 +33,33 @@ endRD <- leave
 gantt.bat <- as.gantt(key=1:9, c("Research literature",
                          "Spatial design",
                          "Paperwork",
-                         "May fieldwork",
-                         "Summer fieldwork",
-                         "Statistical Analisis",
+                         "Fieldwork",
+                         "Bat Survey workshop",
+                         "Statistical Analysis",
                          "NASBR Meeting",
                          "Research paper",
                          "Reasses design"
                          ),
-              c(startRL, startSD, startPW, startMFW, startSFW,
-                startSA, startNASBR , startRP, startRD),
-              c(endRL, endSD, endPW, endMFW, endSFW,
-                endSA, endNASBR, endRP, endRD),
+              c(startRL, startSD, startPW, startFW, StartBW, startSA, startNASBR , startRP, startRD),
+              c(endRL, endSD, endPW, endFW, endBW, endSA, endNASBR, endRP, endRD),
               done=rep(0, 7))
 plot(gantt.bat, xlim=c(arrive, leave))
 ```
 
+**Research literature:** Ongoing, I will keep on reading and updating about models, detectors and/or bat ecology until at least July the 31st
+
+**Spatial design:** Ongoing, the work done so far can be found [here](http://rpubs.com/derek_corcoran/bats_california), the first sampling design draft will be available on friday the 1st of may. For more information and scripts go [here](https://github.com/derek-corcoran-barrios/Bats_California)
+
+**Paperwork:** Ongoing,to be finished on May 10th, what is left to do, drivers licence, harassment seminar and purchase cards.
+
+**May fieldwork:** From the 15th till the 7th of August.
+
+**bat survey workshop:**Unsure of place and/or exact date.
+
+**Statistical analysis:** From the June 12th till the 5th of October, this includes sending an abstract to the NASABR meeting
+
+**NASBR meeting:** Participation in the 45th [North American Society for bat research](https://www.nasbr.org/) meeting in Monterrey California.
+
+**Writting of research paper:**:Start of research paper writting on the 5th day of October, to be finished on the last week of December.
+
+**Reasses design:** strating on the last week of December I will start reassesing the design for next year.
