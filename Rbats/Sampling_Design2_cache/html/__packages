@@ -8,3 +8,6 @@ rasterVis
 maps
 maptools
 rgdal
+reshape
+Rcpp
+unmarked

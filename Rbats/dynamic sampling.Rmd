@@ -1,0 +1,201 @@
+---
+output: word_document
+---
+###Simulated sampling Dynamic modeling
+
+```{r}
+library("unmarked")
+```
+
+#First we simulate our detection history for 30 sites with four primary sampling periods, and three secondary sampling periods each.
+```{r, echo=FALSE}
+s1.1a<-rbinom(n=10, size=1, prob=0.7)
+s1.1b<-rbinom(n=10, size=1, prob=0.4)
+s1.1c<-rbinom(n=10, size=1, prob=0.2)
+s1.2a<-rbinom(n=10, size=1, prob=0.7)
+s1.2b<-rbinom(n=10, size=1, prob=0.4)
+s1.2c<-rbinom(n=10, size=1, prob=0.2)
+s1.3a<-rbinom(n=10, size=1, prob=0.7)
+s1.3b<-rbinom(n=10, size=1, prob=0.4)
+s1.3c<-rbinom(n=10, size=1, prob=0.2)
+
+s1.1 <-c(s1.1a,s1.1b,s1.1c)
+s1.2 <-c(s1.2a,s1.2b,s1.2c)
+s1.3 <-c(s1.3a,s1.3b,s1.3c)
+
+s2.1a<-rbinom(n=10, size=1, prob=0.7)
+s2.1b<-rbinom(n=10, size=1, prob=0.4)
+s2.1c<-rbinom(n=10, size=1, prob=0.2)
+s2.2a<-rbinom(n=10, size=1, prob=0.7)
+s2.2b<-rbinom(n=10, size=1, prob=0.4)
+s2.2c<-rbinom(n=10, size=1, prob=0.2)
+s2.3a<-rbinom(n=10, size=1, prob=0.7)
+s2.3b<-rbinom(n=10, size=1, prob=0.4)
+s2.3c<-rbinom(n=10, size=1, prob=0.2)
+
+s2.1 <-c(s2.1a,s2.1b,s2.1c)
+s2.2 <-c(s2.2a,s2.2b,s2.2c)
+s2.3 <-c(s2.3a,s2.3b,s2.3c)
+
+s3.1a<-rbinom(n=10, size=1, prob=0.9)
+s3.1b<-rbinom(n=10, size=1, prob=0.4)
+s3.1c<-rbinom(n=10, size=1, prob=0.1)
+s3.2a<-rbinom(n=10, size=1, prob=0.9)
+s3.2b<-rbinom(n=10, size=1, prob=0.4)
+s3.2c<-rbinom(n=10, size=1, prob=0.2)
+s3.3a<-rbinom(n=10, size=1, prob=0.9)
+s3.3b<-rbinom(n=10, size=1, prob=0.4)
+s3.3c<-rbinom(n=10, size=1, prob=0.1)
+
+s3.1 <-c(s3.1a,s3.1b,s3.1c)
+s3.2 <-c(s3.2a,s3.2b,s3.2c)
+s3.3 <-c(s3.3a,s3.3b,s3.3c)
+
+s4.1a<-rbinom(n=10, size=1, prob=0.9)
+s4.1b<-rbinom(n=10, size=1, prob=0.4)
+s4.1c<-rbinom(n=10, size=1, prob=0.1)
+s4.2a<-rbinom(n=10, size=1, prob=0.9)
+s4.2b<-rbinom(n=10, size=1, prob=0.4)
+s4.2c<-rbinom(n=10, size=1, prob=0.1)
+s4.3a<-rbinom(n=10, size=1, prob=0.9)
+s4.3b<-rbinom(n=10, size=1, prob=0.4)
+s4.3c<-rbinom(n=10, size=1, prob=0.1)
+
+s4.1 <-c(s4.1a,s4.1b,s4.1c)
+s4.2 <-c(s4.2a,s4.2b,s4.2c)
+s4.3 <-c(s4.3a,s4.3b,s4.3c)
+sampling.ocup<- cbind(s1.1,s1.2,s1.3,s2.1,s2.2,s2.3,s3.1,s3.2,s3.3,s4.1,s4.2,s4.3)
+```
+
+```{r}
+View(sampling.ocup)
+```
+This simulated data has some underlying charachteristics:
+
+**environment a (top 10 rows, the best environment for bats, also occupancy increases with time)**
+```{r}
+mean(sampling.ocup[1:10])
+```
+**environment b (rows 11 to 20, medium environment, occupancy stays the same)**
+```{r}
+mean(sampling.ocup[11:20])
+```
+**environment c (rows 21 to 30) poor environment for bats, also there is extintion)**
+```{r}
+mean(sampling.ocup[21:30])
+```
+
+Now we will simulate some variables for the site covariates.
+#Site cov static
+**the more variable 1, the better for bats**
+
+```{r, echo=FALSE}
+v.1a<-rnorm(n=10, mean=20, sd=0.7)
+v.1b<-rnorm(n=10, mean=10, sd=0.7)
+v.1c<-rnorm(n=10, mean=5, sd=0.7)
+
+v.1 <-c(v.1a,v.1b,v.1c)
+```
+
+```{r}
+mean(v.1[1:10])
+mean(v.1[11:20])
+mean(v.1[21:30])
+```
+
+
+#the less variable 2 better for bats
+```{r,echo=FALSE}
+v.2a<-rnorm(n=10, mean=20, sd=0.7)
+v.2b<-rnorm(n=10, mean=40, sd=0.7)
+v.2c<-rnorm(n=10, mean=60, sd=0.7)
+
+v.2 <-c(v.2a,v.2b,v.2c)
+```
+
+```{r}
+mean(v.2[1:10])
+mean(v.2[11:20])
+mean(v.2[21:30])
+```
+
+#variable 3 does not mater to bats
+
+```{r,echo=FALSE}
+v.3a<-rnorm(n=10, mean=20, sd=0.7)
+v.3b<-rnorm(n=10, mean=20, sd=0.7)
+v.3c<-rnorm(n=10, mean=20, sd=0.7)
+
+
+v.3 <-c(v.3a,v.3b,v.3c)
+```
+
+```{r}
+mean(v.3[1:10])
+mean(v.3[11:20])
+mean(v.3[21:30])
+```
+
+```{r}
+sampling.cov<- cbind(v.1,v.2, v.3)
+```
+#yearly colonization extintion variable
+
+```{r}
+temp1<-rnorm(n=30, mean=20, sd=10)
+temp2<-rnorm(n=30, mean=40, sd=10)
+temp3<-rnorm(n=30, mean=50, sd=10)
+temp4<-rnorm(n=30, mean=60, sd=10)
+
+
+temps <-cbind(temp1,temp2, temp3, temp4)
+```
+#observer within secondary it could be variable
+
+
+#observers dont vary in the model, they should all be the same
+
+```{r}
+obs1<-rnorm(n=30, mean=40, sd=0.7)
+obs2<-rnorm(n=30, mean=40, sd=0.7)
+obs3<-rnorm(n=30, mean=40, sd=0.7)
+obs4<-rnorm(n=30, mean=40, sd=0.7)
+obs5<-rnorm(n=30, mean=40, sd=0.7)
+obs6<-rnorm(n=30, mean=40, sd=0.7)
+obs7<-rnorm(n=30, mean=40, sd=0.7)
+obs8<-rnorm(n=30, mean=40, sd=0.7)
+obs9<-rnorm(n=30, mean=40, sd=0.7)
+obs10<-rnorm(n=30, mean=40, sd=0.7)
+obs11<-rnorm(n=30, mean=40, sd=0.7)
+obs12<-rnorm(n=30, mean=40, sd=0.7)
+
+observers1<-data.frame(cbind(obs1,obs2,obs3, obs4, obs5, obs6, obs7, obs8, obs9, obs10, obs11, obs12))
+
+observers2<-data.frame(cbind(obs1,obs2,obs3, obs4, obs5, obs6, obs7, obs8, obs9, obs10, obs11, obs12))
+
+observers<-list(observers1, observers2)
+names(observers) <-c("obs1", "obs2")
+```
+#primary model
+```{r}
+umf <- unmarkedMultFrame(y = sampling.ocup, 
+                            siteCovs = data.frame(sampling.cov), 
+                            yearlySiteCovs=data.frame(temps),
+                            obsCovs=observers, numPrimary=3)
+```
+#Dynamic model
+#first term static variables
+#second term colonization (variable)
+#third extintion (variable)
+#detection (observer)
+#the best model should take into acount v.1 and v.2, but not v.3, it shouldn't take into acount observers
+
+```{r}
+model1 <- colext(~v.1+v.2+v.3, ~temp1, ~temp1, ~obs1+obs2, umf)
+
+model2 <- colext(~1, ~1, ~1, ~1, umf)
+
+model3 <- colext(~v.1+v.2, ~temp1, ~temp1, ~1, umf) #this should be the best model
+model4 <-colext(~v.1+v.2, ~1, ~1, ~1, umf)
+```
+#graph
