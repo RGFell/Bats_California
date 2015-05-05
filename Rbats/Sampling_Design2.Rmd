@@ -76,8 +76,11 @@ bb<-resample(bb, PNF)
 bs<-resample(bs, PNF)
 Vegetation_existing<-resample(Vegetation_existing, PNF)
 FireReturnIntervalDeparture<-resample(FireReturnIntervalDeparture, PNF)
+FireReturnIntervalDeparture[is.na(FireReturnIntervalDeparture)] <- 0
 TreatmentsStorrie<-resample(TreatmentsStorrie, PNF)
 topo<-resample(topo,PNF)
+TreatmentsStorrie[is.na(TreatmentsStorrie)] <- 0
+
 ```
 
 #Prepare a distance from river/road raster
@@ -104,14 +107,13 @@ lines(roads.v)
 #Check for correlation between rasters
 
 ```{r}
-AllLayers <-stack(topo,TreatmentsStorrie,FireReturnIntervalDeparture, Vegetation_existing)
-plot (AllLayers, colNA="black")
-pairs(AllLayers)
-AllLayers[is.na(AllLayers)] <- 0
+AllLayers1 <-stack(topo,TreatmentsStorrie,FireReturnIntervalDeparture, Vegetation_existing)
+plot (AllLayers1, colNA="black")
+pairs(AllLayers1)
 rasterRescale<-function(r){
     ((r-cellStats(r,"min"))/(cellStats(r,"max")-cellStats(r,"min")))
 }
-AllLayers2<-rasterRescale(AllLayers)
+AllLayers2<-rasterRescale(AllLayers1)
 plot(AllLayers2)
 ```
 
@@ -128,7 +130,7 @@ Here we will ask R to use kmeans to sort the area into 3 types of habitat using 
 valuetable2 <- getValues(AllLayers2)
 head(valuetable2) 
 summary(valuetable2)
-km <- kmeans(na.omit(valuetable2), centers = 5, iter.max = 100, nstart = 10)
+km1 <- kmeans(na.omit(valuetable2), centers = 5, iter.max = 100, nstart = 10)
 # create a blank raster with default values of 0
 rNA <- setValues(raster(AllLayers2), 0)
 for(i in 1:nlayers(AllLayers2)){
@@ -139,7 +141,7 @@ rNA <- getValues(rNA)
 # convert valuetable to a data.frame
 valuetable2 <- as.data.frame(valuetable2)
 # if rNA is a 0, assign the cluster value at that position
-valuetable2$class[rNA==0] <- km$cluster
+valuetable2$class[rNA==0] <- km1$cluster
 # if rNA is a 1, assign an NA at that position
 valuetable2$class[rNA==1] <- NA
 # create a blank raster
@@ -157,7 +159,7 @@ More info on how to do this clasification in *https://geoscripting-wur.github.io
 
 
 ```{r}
-set.seed(10)
+set.seed(9)
 df.class.4 <- data.frame(id=c(1,2,3,4,5), v=c(1,NA,NA,NA,NA))
 class4 <- subs(classes2.1, df.class.4,subswithNA=FALSE)
 points4<-sampleRandom(class4,10, na.rm=TRUE, xy=TRUE)
@@ -235,8 +237,12 @@ s4.2 <-c(s4.2a,s4.2b,s4.2c)
 s4.3 <-c(s4.3a,s4.3b,s4.3c)
 sampling.ocup<- cbind(s1.1,s1.2,s1.3,s2.1,s2.2,s2.3,s3.1,s3.2,s3.3,s4.1,s4.2,s4.3)
 ```
+```{r,echo=FALSE}
+library("knitr", lib.loc="~/R/win-library/3.2")
+kable(sampling.ocup)
+```
 
-This simulated data has some underlying charachteristics:
+This simulated data has some underlying characteristics:
 
 **environment a (top 10 rows, the best environment for bats, also occupancy increases with time)**
 ```{r}
@@ -357,11 +363,14 @@ detection (observer)
 ###the best model should take into acount v.1 and v.2, but not v.3, it shouldn't take into acount observers
 
 ```{r}
-model1 <- colext(~v.1+v.2+v.3, ~temp1, ~temp1, ~obs1+obs2, umf)
+model1 <- colext(~v.1+v.2+v.3, ~1, ~1, ~1, umf)
 
 model2 <- colext(~1, ~1, ~1, ~1, umf)
 
-model3 <- colext(~v.1+v.2, ~temp1, ~temp1, ~1, umf) #this should be the best model
-model4 <-colext(~v.1+v.2, ~1, ~1, ~1, umf)
+model3 <- colext(~v.1+v.2, ~1, ~1, ~1, umf) #this should be the best model
+model1
+model2
+model3
+
 ```
 ###graph

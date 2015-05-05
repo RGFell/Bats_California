@@ -11,3 +11,4 @@ rgdal
 reshape
 Rcpp
 unmarked
+knitr
