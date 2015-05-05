@@ -148,27 +148,92 @@ valuetable2$class[rNA==1] <- NA
 classes2 <- raster(AllLayers2)
 # assign values from the 'class' column of valuetable
 classes2.1 <- setValues(classes2, valuetable2$class)
-plot(classes2.1, legend=TRUE)
+plot(classes2.1, legend=TRUE, colNA="black")
 summary (classes2.1)
 ```
 
 More info on how to do this clasification in *https://geoscripting-wur.github.io/AdvancedRasterAnalysis/*
 
+#separate layers acording to places with or without fire
 
-#Extract Random points from each habitat type
+```{r}
+df.bs1 <- data.frame(id=c(0,1,2,3,4,5), v=c(NA,1,1,1,1,1))
+fire <- subs(bs1, df.bs1,subswithNA=FALSE)
+fire<-projectRaster(fire, PNF)
+
+df.bs2 <- data.frame(id=c(NA,1), v=c(1,NA))
+not.fire <- subs(fire, df.bs2,subswithNA=FALSE)
+
+plot(fire, colNA="black")
+plot(not.fire, colNA="black")
+summary(fire)
+summary(not.fire)
+classes.with.fire<-classes2.1*fire
+classes.without.fire<-classes2.1*not.fire
+
+plot(classes.with.fire,colNA="black")
+summary(classes.with.fire)
+plot(classes.without.fire,colNA="black")
+summary(classes.without.fire)
+```
+
+#Extract Random points from each habitat type with equal number in fire and non fire
 
 
 ```{r}
 set.seed(9)
-df.class.4 <- data.frame(id=c(1,2,3,4,5), v=c(1,NA,NA,NA,NA))
-class4 <- subs(classes2.1, df.class.4,subswithNA=FALSE)
-points4<-sampleRandom(class4,10, na.rm=TRUE, xy=TRUE)
-df.class.3 <- data.frame(id=c(1,2,3,4,5), v=c(NA,NA,NA,NA,5))
-class3 <- subs(classes2.1, df.class.3,subswithNA=FALSE)
-points3<-sampleRandom(class3,10, na.rm=TRUE, xy=TRUE)
-plot(classes2.1)
-points (points4, col= "black")
-points (points3, col= "red")
+
+df.class.1f <- data.frame(id=c(1,2,3,4,5), v=c(1,NA,NA,NA,NA))
+class1f <- subs(classes.with.fire, df.class.1f,subswithNA=FALSE)
+points1f<-sampleRandom(class1f,3, na.rm=TRUE, xy=TRUE)
+
+df.class.1nf <- data.frame(id=c(1,2,3,4,5), v=c(1,NA,NA,NA,NA))
+class1nf <- subs(classes.without.fire, df.class.1nf,subswithNA=FALSE)
+points1nf<-sampleRandom(class1nf,3, na.rm=TRUE, xy=TRUE)
+
+df.class.2f <- data.frame(id=c(1,2,3,4,5), v=c(NA,2,NA,NA,NA))
+class2f <- subs(classes.with.fire, df.class.2f,subswithNA=FALSE)
+points2f<-sampleRandom(class2f,3, na.rm=TRUE, xy=TRUE)
+
+df.class.2nf <- data.frame(id=c(1,2,3,4,5), v=c(NA,2,NA,NA,NA))
+class2nf <- subs(classes.without.fire, df.class.2nf,subswithNA=FALSE)
+points2nf<-sampleRandom(class2nf,3, na.rm=TRUE, xy=TRUE)
+
+df.class.3f <- data.frame(id=c(1,2,3,4,5), v=c(NA,NA,3,NA,NA))
+class3f <- subs(classes.with.fire, df.class.3f,subswithNA=FALSE)
+points3f<-sampleRandom(class3f,3, na.rm=TRUE, xy=TRUE)
+
+df.class.3nf <- data.frame(id=c(1,2,3,4,5), v=c(NA,NA,3,NA,NA))
+class3nf <- subs(classes.without.fire, df.class.3nf,subswithNA=FALSE)
+points3nf<-sampleRandom(class3nf,3, na.rm=TRUE, xy=TRUE)
+
+df.class.4f <- data.frame(id=c(1,2,3,4,5), v=c(NA,NA,NA,4,NA))
+class4f <- subs(classes.with.fire, df.class.4f,subswithNA=FALSE)
+points4f<-sampleRandom(class4f,3, na.rm=TRUE, xy=TRUE)
+
+df.class.4nf <- data.frame(id=c(1,2,3,4,5), v=c(NA,NA,NA,4,NA))
+class4nf <- subs(classes.without.fire, df.class.4nf,subswithNA=FALSE)
+points4nf<-sampleRandom(class4nf,3, na.rm=TRUE, xy=TRUE)
+
+df.class.5f <- data.frame(id=c(1,2,3,4,5), v=c(NA,NA,NA,NA,5))
+class5f <- subs(classes.with.fire, df.class.5f,subswithNA=FALSE)
+points5f<-sampleRandom(class5f,3, na.rm=TRUE, xy=TRUE)
+
+df.class.5nf <- data.frame(id=c(1,2,3,4,5), v=c(NA,NA,NA,NA,5))
+class5nf <- subs(classes.without.fire, df.class.5nf,subswithNA=FALSE)
+points5nf<-sampleRandom(class5nf,3, na.rm=TRUE, xy=TRUE)
+
+plot(classes2.1, colNA="white")
+points (points1f, col= "black", pch=21, bg="black")
+points (points1nf, col="black",pch=24,bg="black")
+points (points2f, col= "blue",pch=21,bg="blue")
+points (points2nf, col="blue", pch=24, bg="blue")
+points (points3f, col= "red",pch=21, bg="red")
+points (points3nf, col="red", pch=24,bg="red")
+points (points4f, col= "brown",pch=21,bg="brown")
+points (points4nf, col="brown", pch=24,bg="brown")
+points (points5f, col= "purple",pch=21,bg="purple")
+points (points5nf, col="purple", pch=24, bg="purple")
 ```
 
 
@@ -180,13 +245,14 @@ library("unmarked", lib.loc="~/R/win-library/3.2")
 
 ###First we simulate our detection history for 30 sites with four primary sampling periods, and three secondary sampling periods each.
 ```{r, echo=FALSE}
-s1.1a<-rbinom(n=10, size=1, prob=0.7)
+set.seed(20)
+s1.1a<-rbinom(n=10, size=1, prob=0.9)
 s1.1b<-rbinom(n=10, size=1, prob=0.4)
 s1.1c<-rbinom(n=10, size=1, prob=0.2)
-s1.2a<-rbinom(n=10, size=1, prob=0.7)
+s1.2a<-rbinom(n=10, size=1, prob=0.9)
 s1.2b<-rbinom(n=10, size=1, prob=0.4)
 s1.2c<-rbinom(n=10, size=1, prob=0.2)
-s1.3a<-rbinom(n=10, size=1, prob=0.7)
+s1.3a<-rbinom(n=10, size=1, prob=0.9)
 s1.3b<-rbinom(n=10, size=1, prob=0.4)
 s1.3c<-rbinom(n=10, size=1, prob=0.2)
 
@@ -194,13 +260,13 @@ s1.1 <-c(s1.1a,s1.1b,s1.1c)
 s1.2 <-c(s1.2a,s1.2b,s1.2c)
 s1.3 <-c(s1.3a,s1.3b,s1.3c)
 
-s2.1a<-rbinom(n=10, size=1, prob=0.7)
+s2.1a<-rbinom(n=10, size=1, prob=0.9)
 s2.1b<-rbinom(n=10, size=1, prob=0.4)
 s2.1c<-rbinom(n=10, size=1, prob=0.2)
-s2.2a<-rbinom(n=10, size=1, prob=0.7)
+s2.2a<-rbinom(n=10, size=1, prob=0.9)
 s2.2b<-rbinom(n=10, size=1, prob=0.4)
 s2.2c<-rbinom(n=10, size=1, prob=0.2)
-s2.3a<-rbinom(n=10, size=1, prob=0.7)
+s2.3a<-rbinom(n=10, size=1, prob=0.9)
 s2.3b<-rbinom(n=10, size=1, prob=0.4)
 s2.3c<-rbinom(n=10, size=1, prob=0.2)
 
@@ -235,26 +301,26 @@ s4.3c<-rbinom(n=10, size=1, prob=0.1)
 s4.1 <-c(s4.1a,s4.1b,s4.1c)
 s4.2 <-c(s4.2a,s4.2b,s4.2c)
 s4.3 <-c(s4.3a,s4.3b,s4.3c)
-sampling.ocup<- cbind(s1.1,s1.2,s1.3,s2.1,s2.2,s2.3,s3.1,s3.2,s3.3,s4.1,s4.2,s4.3)
+sampling.ocup1<- cbind(s1.1,s1.2,s1.3,s2.1,s2.2,s2.3,s3.1,s3.2,s3.3,s4.1,s4.2,s4.3)
 ```
 ```{r,echo=FALSE}
 library("knitr", lib.loc="~/R/win-library/3.2")
-kable(sampling.ocup)
+kable(sampling.ocup1)
 ```
 
 This simulated data has some underlying characteristics:
 
 **environment a (top 10 rows, the best environment for bats, also occupancy increases with time)**
 ```{r}
-mean(sampling.ocup[1:10])
+mean(sampling.ocup1[1:10])
 ```
 **environment b (rows 11 to 20, medium environment, occupancy stays the same)**
 ```{r}
-mean(sampling.ocup[11:20])
+mean(sampling.ocup1[11:20])
 ```
 **environment c (rows 21 to 30) poor environment for bats, also there is extintion)**
 ```{r}
-mean(sampling.ocup[21:30])
+mean(sampling.ocup1[21:30])
 ```
 
 Now we will simulate some variables for the site covariates.
@@ -350,7 +416,7 @@ names(observers) <-c("obs1", "obs2")
 ```
 ###primary model
 ```{r}
-umf <- unmarkedMultFrame(y = sampling.ocup, 
+umf1 <- unmarkedMultFrame(y = sampling.ocup1, 
                             siteCovs = data.frame(sampling.cov), 
                             yearlySiteCovs=data.frame(temps),
                             obsCovs=observers, numPrimary=3)
@@ -363,11 +429,11 @@ detection (observer)
 ###the best model should take into acount v.1 and v.2, but not v.3, it shouldn't take into acount observers
 
 ```{r}
-model1 <- colext(~v.1+v.2+v.3, ~1, ~1, ~1, umf)
+model1 <- colext(~v.1+v.2+v.3, ~1, ~1, ~1, umf1)
 
-model2 <- colext(~1, ~1, ~1, ~1, umf)
+model2 <- colext(~1, ~1, ~1, ~1, umf1)
 
-model3 <- colext(~v.1+v.2, ~1, ~1, ~1, umf) #this should be the best model
+model3 <- colext(~v.1+v.2, ~1, ~1, ~1, umf1) #this should be the best model
 model1
 model2
 model3

@@ -1,0 +1,15 @@
+base
+sp
+raster
+knitr
+markdown
+lattice
+RColorBrewer
+latticeExtra
+rasterVis
+maps
+maptools
+rgdal
+reshape
+Rcpp
+unmarked
