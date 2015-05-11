@@ -13,3 +13,5 @@ rgdal
 reshape
 Rcpp
 unmarked
+spatstat
+splancs
