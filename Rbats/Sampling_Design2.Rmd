@@ -1,55 +1,58 @@
+---
+output:
+  html_document:
+    keep_md: yes
+---
 
-#Sampling Design
+#Bat survey in Plumas National Forest through the use of acoustic bat detectors
 ###author: Derek Corcoran
 ####Last update: `r Sys.Date() `
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(cache=TRUE)
 ```
 
-First we load the spatial packages
-
-```{r, message=FALSE, warning=FALSE}
+```{r, message=FALSE, warning=FALSE, echo=FALSE,results='hide'}
 library("raster", lib.loc="~/R/win-library/3.2")
 library("rasterVis", lib.loc="~/R/win-library/3.2")
 library("maps", lib.loc="~/R/win-library/3.2")
 library("maptools", lib.loc="~/R/win-library/3.2")
 library("rgdal", lib.loc="~/R/win-library/3.2")
+library("latticeExtra", lib.loc="~/R/win-library/3.2")
+library("dplyr", lib.loc="~/R/win-library/3.2")
 ```
-Then we read the needed rasters
 
-```{r, message=FALSE, warning=FALSE}
+```{r, message=FALSE, warning=FALSE, echo=FALSE, results='hide'}
 PNF<- readGDAL("C:/Users/usuario/Bats_California/layers/PNF.asc")
 PNF<-raster (PNF)
-plot(PNF)
 bc <- readGDAL("C:/Users/usuario/Bats_California/layers/burn_canopy.asc")
 bc<-raster (bc)
-plot(bc)
 bb <- readGDAL("C:/Users/usuario/Bats_California/layers/burn_basal.asc")
 bb<-raster (bb)
-plot(bb)
 bs <- readGDAL("C:/Users/usuario/Bats_California/layers/burn_severity.asc")
 bs<-raster (bs)
-plot(bs)
 topo <- readGDAL("C:/Users/usuario/Bats_California/layers/plumastopo.asc")
 topo<-raster (topo)
-plot(topo)
 Vegetation_existing <- readGDAL("C:/Users/usuario/Bats_California/layers/Vegetation_existing.asc")
 Vegetation_existing<-raster (Vegetation_existing)
-plot(Vegetation_existing)
 FireReturnIntervalDeparture <- readGDAL("C:/Users/usuario/Bats_California/layers/FireReturnIntervalDeparture.asc")
 FireReturnIntervalDeparture<-raster (FireReturnIntervalDeparture)
-plot(FireReturnIntervalDeparture)
 TreatmentsStorrie <- readGDAL("C:/Users/usuario/Bats_California/layers/TreatmentsStorrie.asc")
 TreatmentsStorrie<-raster (TreatmentsStorrie)
-plot(TreatmentsStorrie)
+FireHistory <- readGDAL("C:/Users/usuario/Bats_California/layers/FireHistory.asc")
+FireHistory<-raster (FireHistory)
+Goshawkforag <- readGDAL("C:/Users/usuario/Bats_California/layers/Goshawkforag.asc")
+Goshawkforag<-raster (Goshawkforag)
+GoshawkNEST <- readGDAL("C:/Users/usuario/Bats_California/layers/GoshawkNEST.asc")
+GoshawkNEST<-raster (GoshawkNEST)
+MartenHabit <- readGDAL("C:/Users/usuario/Bats_California/layers/MartenHabit.asc")
+MartenHabit<-raster (MartenHabit)
+SeralStage <-readGDAL("C:/Users/usuario/Bats_California/layers/SeralStage.asc")
+SeralStage<-raster (SeralStage)
 ```
 
-#Change outlayers and extract NAs 
+```{r, echo=FALSE, results='hide', message=FALSE}
+df.bb <- data.frame(id=c(NA,1,2,3,4,5,6,7,255), v=c(0,1,2,3,4,5,6,7,8))#Change outlayers and extract NAs 
 
-In order to classify the raster we will get rid of unnecesary outlayers, and change NAs to 0
-
-```{r}
-df.bb <- data.frame(id=c(NA,1,2,3,4,5,6,7,255), v=c(0,1,2,3,4,5,6,7,8))
 bb1 <- subs(bb, df.bb,subswithNA=FALSE)
 df.bs <- data.frame(id=c(NA,1,2,3,4,255), v=c(0,1,2,3,4,5))
 bs1 <- subs(bs, df.bs,subswithNA=FALSE)
@@ -57,95 +60,205 @@ df.bc <- data.frame(id=c(NA,1,2,3,4,5,255), v=c(0,1,2,3,4,5,6))
 bc1 <- subs(bc, df.bc,subswithNA=FALSE)
 lidar.limit <- readOGR(dsn="C:/Users/usuario/Bats_California/layers",layer="LiDAR_Boundary")
 lidar.limit <- spTransform(lidar.limit, CRS("+proj=longlat +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +no_defs"))
-plot(PNF)
-plot(lidar.limit, add=TRUE)
 ```
-
-#Put all rasters in the same projection
-
-```{r}
+```{r, echo=FALSE, results='hide', message=FALSE}
 bb<-projectRaster(bb1, PNF)
 bs<-projectRaster(bs1, PNF)
 bc<-projectRaster(bc1, PNF)
 Vegetation_existing<-projectRaster(Vegetation_existing, PNF)
 FireReturnIntervalDeparture<-projectRaster(FireReturnIntervalDeparture, PNF)
 TreatmentsStorrie<-projectRaster(TreatmentsStorrie, PNF)
-
+FireHistory <-projectRaster(FireHistory, PNF)
+Goshawkforag <-projectRaster(Goshawkforag,PNF)
+GoshawkNEST<- projectRaster(GoshawkNEST, PNF)
+MartenHabit<- projectRaster(MartenHabit, PNF)
+SeralStage<- projectRaster(SeralStage,PNF)
 ```
-#Put them all in the same resolution and size
-
-```{r}
+```{r, echo=FALSE, results='hide', message=FALSE}
 bc<-resample(bc, PNF)
 bb<-resample(bb, PNF)
 bs<-resample(bs, PNF)
-Vegetation_existing<-resample(Vegetation_existing, PNF)
+Vegetation_existing<-resample(Vegetation_existing, PNF, method="ngb")
 FireReturnIntervalDeparture<-resample(FireReturnIntervalDeparture, PNF)
-FireReturnIntervalDeparture[is.na(FireReturnIntervalDeparture)] <- 0
 TreatmentsStorrie<-resample(TreatmentsStorrie, PNF)
+FireHistory<-resample(FireHistory, PNF)
 topo<-resample(topo,PNF)
+Goshawkforag<-resample(Goshawkforag,PNF, method="ngb")
+GoshawkNEST <- resample(GoshawkNEST, PNF, method="ngb")
 TreatmentsStorrie[is.na(TreatmentsStorrie)] <- 0
-
+MartenHabit <- resample (MartenHabit, PNF, method="ngb")
+SeralStage <- resample (SeralStage, PNF, method="bilinear")
 ```
 
-#Prepare a distance from river/road raster
+#Introduction
 
-```{r}
+To study bat occupancy in the Plumas national forest by surveying acustically different areas of the forest, the three objective species for this survey are the Pallid bat, the Townsend's Long-eared bat, and the California Bat. Nevertheless, there is at least 14 species that form the bat ensemble in the national forest, the list of species is the following
+
+- Tadarida brasiliensis – free-tailed bat
+- *Antrozous pallidus - Pallid Bat*
+- Eptesicus fuscus - Big Brown Bat
+- Euderma maculatum - Spotted Bat
+- Lasionycteris noctivagans - Silvered-haired Bat
+- Lasiurus blossevillii - Western Red Bat
+- Lasiurus cinereus - Hoary Bat
+- *Corynorhinus townsendii - Townsend's Long-eared Bat*
+- *Myotis californicus - California Bat*
+- Myotis evotis - Long-eared Bat
+- Myotis lucifugus - Little Brown Bat
+- Myotis thysanodes - Fringed Bat
+- Myotis volans - Hairy-winged bat
+- Myotis yumanensis - Yuma myotis
+
+##Objective of the study
+
+To determine the factors that influence bat occupancy in heterogeneous environments of Plumas national forest, including areas corresponding to the moonlight fire and the Storrie fire. Comparing and compementing biotic and abiotic variables. 
+
+```{r, echo=FALSE, results='hide', warning=FALSE}
 roads.v <- readOGR(dsn="C:/Users/usuario/Bats_California/layers",layer="Roads")
 roads.v <- spTransform(roads.v, CRS("+proj=longlat +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +no_defs"))
-plot(PNF)
-lines(roads.v)
 template <- PNF  # this will be the template
 template[] <- NA  # assigns all values as NA
 roads.r <- rasterize(roads.v, template, field=1)
-summary(roads.r)          # pixels crossed by a road have "1" 
-plot(roads.r, add=TRUE)
 ```
-after rasterizing the roads we make the new raster
-```{r}
+
+```{r,echo=FALSE, results='hide'}
 roaddist.r <- distance(roads.r)
 roaddist.r<- roaddist.r*PNF
-class(roaddist.r)
-# Check:
-plot(roaddist.r)
-lines(roads.v)
+
 ```
 
-```{r}
-plot(roaddist.r)
-summary(roaddist.r)
-```
-#Check for correlation between rasters
+```{r,echo=FALSE}
+rivers <- readOGR(dsn="C:/Users/usuario/Bats_California/layers",layer="NHDFlowline")
+rivers <- spTransform(rivers, CRS("+proj=longlat +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +no_defs"))
+template2 <- PNF  # this will be the template
+template2[] <- NA  # assigns all values as NA
+rivers.r <- rasterize(rivers, template2, field=1)
+riverdist.r <- distance(rivers.r)
+riverdist.r<- riverdist.r*PNF
 
-```{r}
-AllLayers1 <-stack(topo,TreatmentsStorrie,FireReturnIntervalDeparture, Vegetation_existing,roaddist.r)
+```
+
+# Specific resear questions and the factors that might influence them
+
+##1. Which factors affect bat occupancy in burned forest?
+        
+###Does bat occupancy differ with the duration of time since the fire?
+
+-	Explanatory variable = burn age at sampling sites (mean number of years between fires for a given point and the time till the last fire for a given point).
+
+```{r,echo=FALSE}
+burn.age<- stack(FireReturnIntervalDeparture, FireHistory)
+names(burn.age)<- c("Fire Interval", "Fire History")
+plot(burn.age)
+```
+
+###Does bat occupancy differ with burn intensity
+
+- Explanatory variable = burn intensity (in the following figure we see the layers that will allow us to work with burn intensity, this layers are v.1= burn intensity of the soil, v.2= burn intensity of the canopy, and v.3= Burn intensity of the basal area)
+
+```{r, echo=FALSE}
+burn<- stack(bs,bc,bb)
+names(burn)<-c("Burn soil", "Burn canopy", "Burn basal")
+plot(burn)
+```
+
+###Does bat occupancy differ with forest type
+
+- Explanatory variable = Stand type 
+-	Explanatory variable = Forest type (type of forest typified in SeralStage, which is seen as band 1.1 in the next figure)
+-	Explanatory variable = Historic burn age (Shown as mean year intervals in the next figure as band 1.2)
+
+```{r,echo=FALSE, cache=TRUE}
+
+Forest.Type <- stack(SeralStage,FireReturnIntervalDeparture)
+names(Forest.Type) <- c("Seral Stage", "Fire Interval")
+plot(Forest.Type)
+
+```
+
+
+###Does bat occupancy differ with roost site availability?
+
+- Explanatory variable = Associated forest metrics (Lidar???, distance to water) 
+
+**Concidering that we will work using lidar images, the layers to use will be acquired later, since most of this variables are only presented for del black polygon in the next figure.**
+
+
+```{r,echo=FALSE}
+library("raster", lib.loc="~/R/win-library/3.2")
+plot(PNF)
+plot(bs, add=TRUE, legend=FALSE)
+plot(lidar.limit, add=TRUE, legend=FALSE)
+```
+
+##Which factors affect bat occupancy in unburned forest?
+
+- explanatory variables = Abiotic variables (Altitud[*shown as band 1 in the next figure*], distance to road [*shown as layer in the next figure*], distance to water *being procesed at the time*, distance to road+trail *being procesed at the time*)
+
+```{r, echo=FALSE}
+abiotic <- stack(roaddist.r, topo, riverdist.r)
+names(abiotic)<-c("Road distance", "Altitud", "River istance")
+plot(abiotic, colNA="black")
+```
+
+##Is occupancy affected by presence of heterospecifics?
+
+###is bat occupancy affected by presence of other bats? (competition)
+
+- Explanatory variable, occupancy of other bats (based on this study)
+
+###is bat occupancy affected by the presence of preys?
+
+- Explanatory variable, athropod emergence (Loren's Study)
+
+###is bat occupancy affected by the presence of predators
+
+- Explanatory variables marten, and spotted owl layers from NFS (Spotted owl habitat foraging and nesting shown as *band 1.1* and *band 1.2* in the next figure and Marten habitat shown as *band 1.3* in the next figure)
+
+```{r,echo=FALSE}
+predators<-stack(Goshawkforag, GoshawkNEST, MartenHabit)
+names(predators)<- c("Goshawk Habitat f", "Goshawk Habitat n", "Marten Habitat")
+plot(predators)
+```
+
+#Sampling desing and sampling unit
+
+In order for us to study bat occupancy and to spatially predict it using the factors described in the previous section, most of the diversity of the forest has to be included in the model. To include that variability, I classified the environments using the following layers (Topography, Intervals between fires, Forest Type, Distance to roads, Nesting Habitat quality for Spotted owl, foraging Habitat quality for Spotted owl, Habitat Quality for Marten) **[to be included tomorrow, distance to rivers, and distance to roads/path]**
+
+##Check for correlation between rasters
+
+First will scale every layer so that it goes from 0 to 1, in order for no layer to have more weight in the classification. And then we check the correlation between rasters. in the next graph/table, we see the relationship between our predictive variables. Here we see that we might want to take one of the two habitat quality layers for the Spotted Owl (R=0.74), and since we are using the spoted owl as a potential predator, we will keep the foraging habitat quality.
+
+
+
+```{r,cache=FALSE, echo=FALSE, results='asis'}
+library("raster", lib.loc="~/R/win-library/3.2")
+AllLayers1 <-stack(topo,FireReturnIntervalDeparture,roaddist.r, SeralStage, riverdist.r)
+names(AllLayers1)<-c("Altitud","Fire Interval", "Distance Road", "Seral Stage", "Distance river")
 AllLayers2<-AllLayers1*PNF
+names(AllLayers2)<-c("Altitud","Fire Interval", "Distance Road", "Seral Stage", "Distance river")
 plot (AllLayers2, colNA="black")
 pairs(AllLayers2)
 rasterRescale<-function(r){
     ((r-cellStats(r,"min"))/(cellStats(r,"max")-cellStats(r,"min")))
 }
-AllLayers3<-rasterRescale(AllLayers2)
-plot(AllLayers3)
+AllLayers2<-rasterRescale(AllLayers2)
+#AllLayers2<-dropLayer(AllLayers2,5)
+plot(AllLayers2)
 ```
 
-#Clasification example
+#Clasification
 
-Even though we shouldn't classify using 3 layers of such high classification we will use the RasterBrick of the three burn classifications to exemplify how we will divide the area into areas of similar characteristics.
-Here we will ask R to use kmeans to sort the area into 3 types of habitat using the abovementioned rasterbrick:
-
-
-#now with every layer
+Now we will use kmeans to sort the area into 5 types of habitat using the abovementioned rasterstack, and it will be ploted with different colors for every type of environment.
 
 
-```{r, echo=FALSE}
-valuetable <- getValues(AllLayers3)
-head(valuetable) 
-summary(valuetable)
+```{r, echo=FALSE,cache=FALSE}
+valuetable <- getValues(AllLayers2)
 km1 <- kmeans(na.omit(valuetable), centers = 5, iter.max = 100, nstart = 10)
 # create a blank raster with default values of 0
-rNA <- setValues(raster(AllLayers3), 0)
-for(i in 1:nlayers(AllLayers3)){
-  rNA[is.na(AllLayers3[[i]])] <- 1
+rNA <- setValues(raster(AllLayers2), 0)
+for(i in 1:nlayers(AllLayers2)){
+  rNA[is.na(AllLayers2[[i]])] <- 1
 }
 # convert rNA to an integer vector
 rNA <- getValues(rNA)
@@ -156,18 +269,19 @@ valuetable$class[rNA==0] <- km1$cluster
 # if rNA is a 1, assign an NA at that position
 valuetable$class[rNA==1] <- NA
 # create a blank raster
-classes2 <- raster(AllLayers3)
+classes1 <- raster(AllLayers2)
 # assign values from the 'class' column of valuetable
-classes2a <- setValues(classes2, valuetable2$class)
-plot(classes2a, legend=TRUE, colNA="black")
-summary (classes2a)
+classes1 <- setValues(classes1, valuetable$class)
+plot(classes1, legend=TRUE, colNA="black")
 ```
 
 More info on how to do this clasification in *https://geoscripting-wur.github.io/AdvancedRasterAnalysis/*
 
 #separate layers acording to places with or without fire
 
-```{r}
+Now we will separate the whole area in two subtypes burned areas and non-buned areas, based on the burn severity layers
+
+```{r, cache=FALSE, echo=FALSE}
 df.bs1 <- data.frame(id=c(0,1,2,3,4,5), v=c(NA,1,1,1,1,1))
 fire <- subs(bs1, df.bs1,subswithNA=FALSE)
 fire<-projectRaster(fire, PNF)
@@ -175,79 +289,149 @@ fire<-projectRaster(fire, PNF)
 df.bs2 <- data.frame(id=c(NA,1), v=c(1,NA))
 not.fire <- subs(fire, df.bs2,subswithNA=FALSE)
 
-plot(fire, colNA="black")
-plot(not.fire, colNA="black")
-plot(lidar.limit,add=TRUE)
-summary(fire)
-summary(not.fire)
-classes.with.fire<-classes2a*fire
-classes.without.fire<-classes2a*not.fire
+classes.with.fire<-classes1*fire
+classes.without.fire<-classes1*not.fire
 
-plot(classes.with.fire,colNA="black")
-summary(classes.with.fire)
-plot(classes.without.fire,colNA="black")
-summary(classes.without.fire)
+plot(classes.with.fire,colNA="black", main="Classification within burned area")
+plot(classes.without.fire,colNA="black",main="Classification within non-burned area")
 ```
 
 #Extract Random points from each habitat type with equal number in fire and non fire
 
+During the first year of sampling 120 samples will be colected, 60 in burned areas, and 60 in non-burned areas, within each, 12 random points will be sampled in each habtitat type defined by the K-means classification.
 
-```{r}
-set.seed(11)
+
+- 60 random points in not Fire, 12 random points per each environment type
+- 60 random points in Fire, 12 random points per each environment type
+- We plot the chosen random points over the topographic map, each color is an environment type, full circles are places where there was no fire, and full triangles, where there was a fire
+
+
+```{r,cache=FALSE, fig.height=6, fig.width=8, echo=FALSE}
+set.seed(12)
 
 df.class.1f <- data.frame(id=c(1,2,3,4,5), v=c(1,NA,NA,NA,NA))
 class1f <- subs(classes.with.fire, df.class.1f,subswithNA=FALSE)
-points1f<-sampleRandom(class1f,3, na.rm=TRUE, xy=TRUE)
+points1f<-sampleRandom(class1f,12, na.rm=TRUE, xy=TRUE, sp=TRUE)
 
 df.class.1nf <- data.frame(id=c(1,2,3,4,5), v=c(1,NA,NA,NA,NA))
 class1nf <- subs(classes.without.fire, df.class.1nf,subswithNA=FALSE)
-points1nf<-sampleRandom(class1nf,3, na.rm=TRUE, xy=TRUE)
+points1nf<-sampleRandom(class1nf,12, na.rm=TRUE, xy=TRUE, sp=TRUE)
 
 df.class.2f <- data.frame(id=c(1,2,3,4,5), v=c(NA,2,NA,NA,NA))
 class2f <- subs(classes.with.fire, df.class.2f,subswithNA=FALSE)
-points2f<-sampleRandom(class2f,3, na.rm=TRUE, xy=TRUE)
+points2f<-sampleRandom(class2f,12, na.rm=TRUE, xy=TRUE, sp=TRUE)
 
 df.class.2nf <- data.frame(id=c(1,2,3,4,5), v=c(NA,2,NA,NA,NA))
 class2nf <- subs(classes.without.fire, df.class.2nf,subswithNA=FALSE)
-points2nf<-sampleRandom(class2nf,3, na.rm=TRUE, xy=TRUE)
+points2nf<-sampleRandom(class2nf,12, na.rm=TRUE, xy=TRUE, sp=TRUE)
 
 df.class.3f <- data.frame(id=c(1,2,3,4,5), v=c(NA,NA,3,NA,NA))
 class3f <- subs(classes.with.fire, df.class.3f,subswithNA=FALSE)
-points3f<-sampleRandom(class3f,3, na.rm=TRUE, xy=TRUE)
+points3f<-sampleRandom(class3f,12, na.rm=TRUE, xy=TRUE, sp=TRUE)
 
 df.class.3nf <- data.frame(id=c(1,2,3,4,5), v=c(NA,NA,3,NA,NA))
 class3nf <- subs(classes.without.fire, df.class.3nf,subswithNA=FALSE)
-points3nf<-sampleRandom(class3nf,3, na.rm=TRUE, xy=TRUE)
+points3nf<-sampleRandom(class3nf,12, na.rm=TRUE, xy=TRUE, sp=TRUE)
 
 df.class.4f <- data.frame(id=c(1,2,3,4,5), v=c(NA,NA,NA,4,NA))
 class4f <- subs(classes.with.fire, df.class.4f,subswithNA=FALSE)
-points4f<-sampleRandom(class4f,3, na.rm=TRUE, xy=TRUE)
+points4f<-sampleRandom(class4f,12, na.rm=TRUE, xy=TRUE, sp= TRUE)
 
 df.class.4nf <- data.frame(id=c(1,2,3,4,5), v=c(NA,NA,NA,4,NA))
 class4nf <- subs(classes.without.fire, df.class.4nf,subswithNA=FALSE)
-points4nf<-sampleRandom(class4nf,3, na.rm=TRUE, xy=TRUE)
+points4nf<-sampleRandom(class4nf,12, na.rm=TRUE, xy=TRUE, sp=TRUE)
 
 df.class.5f <- data.frame(id=c(1,2,3,4,5), v=c(NA,NA,NA,NA,5))
 class5f <- subs(classes.with.fire, df.class.5f,subswithNA=FALSE)
-points5f<-sampleRandom(class5f,3, na.rm=TRUE, xy=TRUE)
+points5f<-sampleRandom(class5f,12, na.rm=TRUE, xy=TRUE, sp=TRUE)
 
 df.class.5nf <- data.frame(id=c(1,2,3,4,5), v=c(NA,NA,NA,NA,5))
 class5nf <- subs(classes.without.fire, df.class.5nf,subswithNA=FALSE)
-points5nf<-sampleRandom(class5nf,3, na.rm=TRUE, xy=TRUE)
+points5nf<-sampleRandom(class5nf,12, na.rm=TRUE, xy=TRUE, sp=TRUE)
 
-plot(classes2a, colNA="white")
-points (points1f, col= "black", pch=21, bg="black")
-points (points1nf, col="black",pch=24,bg="black")
-points (points2f, col= "blue",pch=21,bg="blue")
-points (points2nf, col="blue", pch=24, bg="blue")
-points (points3f, col= "red",pch=21, bg="red")
-points (points3nf, col="red", pch=24,bg="red")
-points (points4f, col= "brown",pch=21,bg="brown")
-points (points4nf, col="brown", pch=24,bg="brown")
-points (points5f, col= "purple",pch=21,bg="purple")
-points (points5nf, col="purple", pch=24, bg="purple")
 ```
 
+```{r, echo=FALSE}
+topo.park<-(topo*PNF)
+arterial<-roads.v[roads.v$FUNCTIONAL=="A - ARTERIAL",]
+collector<-roads.v[roads.v$FUNCTIONAL=="C - COLLECTOR",]
+local<-roads.v[roads.v$FUNCTIONAL=="L - LOCAL",]
+levelplot(topo.park, contour=TRUE, margin=FALSE)+ layer(sp.points(points5nf, col="purple", pch=17))+ layer(sp.points(points5f, col="purple", pch=19))+ layer(sp.points(points4nf, col="brown", pch=17))+ layer(sp.points(points4f, col="brown", pch=19))+ layer(sp.points(points3nf, col="red", pch=17))+ layer(sp.points(points3f, col="red", pch=19))+ layer(sp.points(points2nf, col="blue", pch=17))+ layer(sp.points(points2f, col="blue", pch=19))+ layer(sp.points(points1nf, col="black", pch=17))+ layer(sp.points(points1f, col="black", pch=19))+layer(sp.lines(arterial, col="red", lw=2))+layer(sp.lines(collector, col="red", lw=1, lty=2))
+
+```
+
+###Values
+
+```{r, echo=FALSE}
+df.values<-extract(AllLayers1, points1nf, df=TRUE, method="simple")
+df.values<-df.values[,2:6]
+df.values<-cbind(points1nf$x, points1nf$y, df.values,rep("1nf", times=12))
+colnames(df.values)<- c("Long", "Lat","Height","Fire_Interval", "Distance_to_Road", "Sage_Stage", "Distance_to_Water", "ID")
+df.values$Long=df.values$Long*-1
+
+df.values1f<-extract(AllLayers1, points1f, df=TRUE, method="simple")
+df.values1f<-df.values1f[,2:6]
+df.values1f<-cbind(points1f$x, points1f$y, df.values1f,rep("1f", times=12))
+colnames(df.values1f)<- c("Long", "Lat","Height","Fire_Interval", "Distance_to_Road", "Sage_Stage", "Distance_to_Water", "ID")
+df.values1f$Long=df.values1f$Long*-1
+
+df.values2nf<-extract(AllLayers1, points2nf, df=TRUE, method="simple")
+df.values2nf<-df.values2nf[,2:6]
+df.values2nf<-cbind(points2nf$x, points2nf$y, df.values2nf,rep("2nf", times=12))
+colnames(df.values2nf)<- c("Long", "Lat","Height","Fire_Interval", "Distance_to_Road", "Sage_Stage", "Distance_to_Water", "ID")
+df.values2nf$Long=df.values2nf$Long*-1
+
+df.values2f<-extract(AllLayers1, points2f, df=TRUE, method="simple")
+df.values2f<-df.values2f[,2:6]
+df.values2f<-cbind(points2f$x, points2f$y, df.values2f,rep("2f", times=12))
+colnames(df.values2f)<- c("Long", "Lat","Height","Fire_Interval", "Distance_to_Road", "Sage_Stage", "Distance_to_Water", "ID")
+df.values2f$Long=df.values2f$Long*-1
+
+df.values3nf<-extract(AllLayers1, points3nf, df=TRUE, method="simple")
+df.values3nf<-df.values3nf[,2:6]
+df.values3nf<-cbind(points3nf$x, points3nf$y, df.values3nf,rep("3nf", times=12))
+colnames(df.values3nf)<- c("Long", "Lat","Height","Fire_Interval", "Distance_to_Road", "Sage_Stage", "Distance_to_Water", "ID")
+df.values3nf$Long=df.values3nf$Long*-1
+
+df.values3f<-extract(AllLayers1, points3f, df=TRUE, method="simple")
+df.values3f<-df.values3f[,2:6]
+df.values3f<-cbind(points3f$x, points3f$y, df.values3f,rep("3f", times=12))
+colnames(df.values3f)<- c("Long", "Lat","Height","Fire_Interval", "Distance_to_Road", "Sage_Stage", "Distance_to_Water", "ID")
+df.values3f$Long=df.values3f$Long*-1
+
+df.values4nf<-extract(AllLayers1, points4nf, df=TRUE, method="simple")
+df.values4nf<-df.values4nf[,2:6]
+df.values4nf<-cbind(points4nf$x, points4nf$y, df.values4nf,rep("4nf", times=12))
+colnames(df.values4nf)<- c("Long", "Lat","Height","Fire_Interval", "Distance_to_Road", "Sage_Stage", "Distance_to_Water", "ID")
+df.values4nf$Long=df.values4nf$Long*-1
+
+df.values4f<-extract(AllLayers1, points4f, df=TRUE, method="simple")
+df.values4f<-df.values4f[,2:6]
+df.values4f<-cbind(points4f$x, points4f$y, df.values4f,rep("4f", times=12))
+colnames(df.values4f)<- c("Long", "Lat","Height","Fire_Interval", "Distance_to_Road", "Sage_Stage", "Distance_to_Water", "ID")
+df.values4f$Long=df.values4f$Long*-1
+
+df.values5nf<-extract(AllLayers1, points5nf, df=TRUE, method="simple")
+df.values5nf<-df.values5nf[,2:6]
+df.values5nf<-cbind(points5nf$x, points5nf$y, df.values5nf,rep("5nf", times=12))
+colnames(df.values5nf)<- c("Long", "Lat","Height","Fire_Interval", "Distance_to_Road", "Sage_Stage", "Distance_to_Water", "ID")
+df.values5nf$Long=df.values5nf$Long*-1
+
+df.values5f<-extract(AllLayers1, points5f, df=TRUE, method="simple")
+df.values5f<-df.values5f[,2:6]
+df.values5f<-cbind(points5f$x, points5f$y, df.values5f,rep("5f", times=12))
+colnames(df.values5f)<- c("Long", "Lat","Height","Fire_Interval", "Distance_to_Road", "Sage_Stage", "Distance_to_Water", "ID")
+df.values5f$Long=df.values5f$Long*-1
+
+df.values<-rbind(df.values, df.values1f, df.values2nf, df.values2f, df.values3nf, df.values3f, df.values4nf, df.values4f, df.values5nf, df.values5f)
+
+by_group <- group_by(df.values, ID)
+by_group <- summarise(by_group, mean(Height), mean(Fire_Interval), mean(Distance_to_Road), mean(Sage_Stage), mean(Distance_to_Water))
+
+library("knitr", lib.loc="~/R/win-library/3.2")
+
+kable(by_group, col.names=c("ID","Height","Fire Interval", "Distance to Road", "Sage Stage", "Distance to Water"), caption="Mean value for every variable for each ID which combines prior classification (1 to 5) and fire or no fire (f or nf)")
+```
 
 #Simulated sampling Dynamic modeling
 
@@ -318,6 +502,8 @@ sampling.ocup1<- cbind(s1.1,s1.2,s1.3,s2.1,s2.2,s2.3,s3.1,s3.2,s3.3,s4.1,s4.2,s4
 ```{r,echo=FALSE}
 library("knitr", lib.loc="~/R/win-library/3.2")
 kable(sampling.ocup1)
+
+
 ```
 
 This simulated data has some underlying characteristics:
@@ -451,4 +637,13 @@ model2
 model3
 
 ```
-###graph
+
+#APENDIX
+
+##Apendix 1
+
+```{r,echo=FALSE, cache=FALSE}
+library("knitr", lib.loc="~/R/win-library/3.2")
+kable(df.values, digits=2, col.names=c("Long", "Lat", "Height", "Fire Interval", "Distance to Road", "Sage Stage", "Distance to Water", "ID"), caption="Values recorded for each selected sampling point toghether with it's ID")
+```
+

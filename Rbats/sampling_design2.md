@@ -1,480 +1,177 @@
 
-#Sampling Design
+#Bat survey in Plumas National Forest through the use of acoustic bat detectors
 ###author: Derek Corcoran
-####Last update: 2015-05-05
+####Last update: 2015-05-21
 
 
-First we load the spatial packages
 
 
-```r
-library("raster", lib.loc="~/R/win-library/3.2")
-library("rasterVis", lib.loc="~/R/win-library/3.2")
-library("maps", lib.loc="~/R/win-library/3.2")
-library("maptools", lib.loc="~/R/win-library/3.2")
-library("rgdal", lib.loc="~/R/win-library/3.2")
-```
-Then we read the needed rasters
 
 
-```r
-PNF<- readGDAL("C:/Users/usuario/Bats_California/layers/PNF.asc")
-```
-
-```
-## C:/Users/usuario/Bats_California/layers/PNF.asc has GDAL driver AAIGrid 
-## and has 250 rows and 434 columns
-```
-
-```r
-PNF<-raster (PNF)
-plot(PNF)
-```
-
-![plot of chunk unnamed-chunk-2](figure/unnamed-chunk-2-1.png) 
-
-```r
-bc <- readGDAL("C:/Users/usuario/Bats_California/layers/burn_canopy.asc")
-```
-
-```
-## C:/Users/usuario/Bats_California/layers/burn_canopy.asc has GDAL driver AAIGrid 
-## and has 250 rows and 322 columns
-```
-
-```r
-bc<-raster (bc)
-plot(bc)
-```
-
-![plot of chunk unnamed-chunk-2](figure/unnamed-chunk-2-2.png) 
-
-```r
-bb <- readGDAL("C:/Users/usuario/Bats_California/layers/burn_basal.asc")
-```
-
-```
-## C:/Users/usuario/Bats_California/layers/burn_basal.asc has GDAL driver AAIGrid 
-## and has 250 rows and 322 columns
-```
-
-```r
-bb<-raster (bb)
-plot(bb)
-```
-
-![plot of chunk unnamed-chunk-2](figure/unnamed-chunk-2-3.png) 
-
-```r
-bs <- readGDAL("C:/Users/usuario/Bats_California/layers/burn_severity.asc")
-```
-
-```
-## C:/Users/usuario/Bats_California/layers/burn_severity.asc has GDAL driver AAIGrid 
-## and has 250 rows and 322 columns
-```
-
-```r
-bs<-raster (bs)
-plot(bs)
-```
-
-![plot of chunk unnamed-chunk-2](figure/unnamed-chunk-2-4.png) 
-
-```r
-topo <- readGDAL("C:/Users/usuario/Bats_California/layers/plumastopo.asc")
-```
-
-```
-## C:/Users/usuario/Bats_California/layers/plumastopo.asc has GDAL driver AAIGrid 
-## and has 103 rows and 151 columns
-```
-
-```r
-topo<-raster (topo)
-plot(topo)
-```
-
-![plot of chunk unnamed-chunk-2](figure/unnamed-chunk-2-5.png) 
-
-```r
-Vegetation_existing <- readGDAL("C:/Users/usuario/Bats_California/layers/Vegetation_existing.asc")
-```
-
-```
-## C:/Users/usuario/Bats_California/layers/Vegetation_existing.asc has GDAL driver AAIGrid 
-## and has 250 rows and 314 columns
-```
-
-```r
-Vegetation_existing<-raster (Vegetation_existing)
-plot(Vegetation_existing)
-```
-
-![plot of chunk unnamed-chunk-2](figure/unnamed-chunk-2-6.png) 
-
-```r
-FireReturnIntervalDeparture <- readGDAL("C:/Users/usuario/Bats_California/layers/FireReturnIntervalDeparture.asc")
-```
-
-```
-## C:/Users/usuario/Bats_California/layers/FireReturnIntervalDeparture.asc has GDAL driver AAIGrid 
-## and has 250 rows and 329 columns
-```
-
-```r
-FireReturnIntervalDeparture<-raster (FireReturnIntervalDeparture)
-plot(FireReturnIntervalDeparture)
-```
-
-![plot of chunk unnamed-chunk-2](figure/unnamed-chunk-2-7.png) 
-
-```r
-TreatmentsStorrie <- readGDAL("C:/Users/usuario/Bats_California/layers/TreatmentsStorrie.asc")
-```
-
-```
-## C:/Users/usuario/Bats_California/layers/TreatmentsStorrie.asc has GDAL driver AAIGrid 
-## and has 271 rows and 250 columns
-```
-
-```r
-TreatmentsStorrie<-raster (TreatmentsStorrie)
-plot(TreatmentsStorrie)
-```
-
-![plot of chunk unnamed-chunk-2](figure/unnamed-chunk-2-8.png) 
-
-#Change outlayers and extract NAs 
-
-In order to classify the raster we will get rid of unnecesary outlayers, and change NAs to 0
 
 
-```r
-df.bb <- data.frame(id=c(NA,1,2,3,4,5,6,7,255), v=c(0,1,2,3,4,5,6,7,8))
-bb1 <- subs(bb, df.bb,subswithNA=FALSE)
-df.bs <- data.frame(id=c(NA,1,2,3,4,255), v=c(0,1,2,3,4,5))
-bs1 <- subs(bs, df.bs,subswithNA=FALSE)
-df.bc <- data.frame(id=c(NA,1,2,3,4,5,255), v=c(0,1,2,3,4,5,6))
-bc1 <- subs(bc, df.bc,subswithNA=FALSE)
-```
-
-#Put all rasters in the same projection
 
 
-```r
-bb<-projectRaster(bb1, PNF)
-bs<-projectRaster(bs1, PNF)
-bc<-projectRaster(bc1, PNF)
-Vegetation_existing<-projectRaster(Vegetation_existing, PNF)
-FireReturnIntervalDeparture<-projectRaster(FireReturnIntervalDeparture, PNF)
-TreatmentsStorrie<-projectRaster(TreatmentsStorrie, PNF)
-```
-#Put them all in the same resolution and size
+#Introduction
+
+To study bat occupancy in the Plumas national forest by surveying acustically different areas of the forest, the three objective species for this survey are the Pallid bat, the Townsend's Long-eared bat, and the California Bat. Nevertheless, there is at least 14 species that form the bat ensemble in the national forest, the list of species is the following
+
+- Tadarida brasiliensis – free-tailed bat
+- *Antrozous pallidus - Pallid Bat*
+- Eptesicus fuscus - Big Brown Bat
+- Euderma maculatum - Spotted Bat
+- Lasionycteris noctivagans - Silvered-haired Bat
+- Lasiurus blossevillii - Western Red Bat
+- Lasiurus cinereus - Hoary Bat
+- *Corynorhinus townsendii - Townsend's Long-eared Bat*
+- *Myotis californicus - California Bat*
+- Myotis evotis - Long-eared Bat
+- Myotis lucifugus - Little Brown Bat
+- Myotis thysanodes - Fringed Bat
+- Myotis volans - Hairy-winged bat
+- Myotis yumanensis - Yuma myotis
+
+##Objective of the study
+
+To determine the factors that influence bat occupancy in heterogeneous environments of Plumas national forest, including areas corresponding to the moonlight fire and the Storrie fire. Comparing and compementing biotic and abiotic variables. 
 
 
-```r
-bc<-resample(bc, PNF)
-bb<-resample(bb, PNF)
-bs<-resample(bs, PNF)
-Vegetation_existing<-resample(Vegetation_existing, PNF)
-FireReturnIntervalDeparture<-resample(FireReturnIntervalDeparture, PNF)
-FireReturnIntervalDeparture[is.na(FireReturnIntervalDeparture)] <- 0
-TreatmentsStorrie<-resample(TreatmentsStorrie, PNF)
-topo<-resample(topo,PNF)
-TreatmentsStorrie[is.na(TreatmentsStorrie)] <- 0
-```
-
-#Prepare a distance from river/road raster
 
 
-```r
-roads.v <- readOGR(dsn="C:/Users/usuario/Bats_California/layers",layer="Roads")
-```
+
 
 ```
 ## OGR data source with driver: ESRI Shapefile 
-## Source: "C:/Users/usuario/Bats_California/layers", layer: "Roads"
-## with 4127 features
-## It has 22 fields
+## Source: "C:/Users/usuario/Bats_California/layers", layer: "NHDFlowline"
+## with 119018 features
+## It has 13 fields
 ```
 
 ```
 ## Warning in readOGR(dsn = "C:/Users/usuario/Bats_California/layers", layer
-## = "Roads"): Z-dimension discarded
+## = "NHDFlowline"): Z-dimension discarded
 ```
 
-```r
-roads.v <- spTransform(roads.v, CRS("+proj=longlat +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +no_defs"))
-plot(PNF)
-lines(roads.v)
-template <- PNF  # this will be the template
-template[] <- NA  # assigns all values as NA
-roads.r <- rasterize(roads.v, template, field=1)
-summary(roads.r)          # pixels crossed by a road have "1" 
-```
+# Specific resear questions and the factors that might influence them
 
-```
-##         layer
-## Min.        1
-## 1st Qu.     1
-## Median      1
-## 3rd Qu.     1
-## Max.        1
-## NA's    86439
-```
+##1. Which factors affect bat occupancy in burned forest?
+        
+###Does bat occupancy differ with the duration of time since the fire?
 
-```r
-plot(roads.r, add=TRUE)
-```
+-	Explanatory variable = burn age at sampling sites (mean number of years between fires for a given point and the time till the last fire for a given point).
 
-![plot of chunk unnamed-chunk-6](figure/unnamed-chunk-6-1.png) 
-after rasterizing the roads we make the new raster
+![](Sampling_Design2_files/figure-html/unnamed-chunk-9-1.png) 
 
-```r
-roaddist.r <- distance(roads.r)
-class(roaddist.r)
-```
+###Does bat occupancy differ with burn intensity
 
-```
-## [1] "RasterLayer"
-## attr(,"package")
-## [1] "raster"
-```
+- Explanatory variable = burn intensity (in the following figure we see the layers that will allow us to work with burn intensity, this layers are v.1= burn intensity of the soil, v.2= burn intensity of the canopy, and v.3= Burn intensity of the basal area)
 
-```r
-# Check:
-plot(roaddist.r)
-lines(roads.v)
-```
+![](Sampling_Design2_files/figure-html/unnamed-chunk-10-1.png) 
 
-![plot of chunk unnamed-chunk-7](figure/unnamed-chunk-7-1.png) 
-#Check for correlation between rasters
+###Does bat occupancy differ with forest type
+
+- Explanatory variable = Stand type 
+-	Explanatory variable = Forest type (type of forest typified in SeralStage, which is seen as band 1.1 in the next figure)
+-	Explanatory variable = Historic burn age (Shown as mean year intervals in the next figure as band 1.2)
+
+![](Sampling_Design2_files/figure-html/unnamed-chunk-11-1.png) 
 
 
-```r
-AllLayers1 <-stack(topo,TreatmentsStorrie,FireReturnIntervalDeparture, Vegetation_existing)
-plot (AllLayers1, colNA="black")
-```
+###Does bat occupancy differ with roost site availability?
 
-![plot of chunk unnamed-chunk-8](figure/unnamed-chunk-8-1.png) 
+- Explanatory variable = Associated forest metrics (Lidar???, distance to water) 
 
-```r
-pairs(AllLayers1)
-```
-
-![plot of chunk unnamed-chunk-8](figure/unnamed-chunk-8-2.png) 
-
-```r
-rasterRescale<-function(r){
-    ((r-cellStats(r,"min"))/(cellStats(r,"max")-cellStats(r,"min")))
-}
-AllLayers2<-rasterRescale(AllLayers1)
-plot(AllLayers2)
-```
-
-![plot of chunk unnamed-chunk-8](figure/unnamed-chunk-8-3.png) 
-
-#Clasification example
-
-Even though we shouldn't classify using 3 layers of such high classification we will use the RasterBrick of the three burn classifications to exemplify how we will divide the area into areas of similar characteristics.
-Here we will ask R to use kmeans to sort the area into 3 types of habitat using the abovementioned rasterbrick:
-
-
-#now with every layer
+**Concidering that we will work using lidar images, the layers to use will be acquired later, since most of this variables are only presented for del black polygon in the next figure.**
 
 
 
 ```
-##      band1.1 band1.2 band1.3 band1.4
-## [1,]      NA       0       0      NA
-## [2,]      NA       0       0      NA
-## [3,]      NA       0       0      NA
-## [4,]      NA       0       0      NA
-## [5,]      NA       0       0      NA
-## [6,]      NA       0       0      NA
+## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : "legend" is not a graphical parameter
 ```
 
-```
-##     band1.1         band1.2             band1.3           band1.4     
-##  Min.   :0.00    Min.   :0.0000000   Min.   :0.00000   Min.   :0      
-##  1st Qu.:0.50    1st Qu.:0.0000000   1st Qu.:0.00000   1st Qu.:0      
-##  Median :0.61    Median :0.0000000   Median :0.00000   Median :0      
-##  Mean   :0.60    Mean   :0.0009901   Mean   :0.06097   Mean   :0      
-##  3rd Qu.:0.72    3rd Qu.:0.0000000   3rd Qu.:0.00000   3rd Qu.:0      
-##  Max.   :1.00    Max.   :1.0000000   Max.   :1.00000   Max.   :1      
-##  NA's   :34580                                         NA's   :64063
-```
+![](Sampling_Design2_files/figure-html/unnamed-chunk-12-1.png) 
 
-![plot of chunk unnamed-chunk-9](figure/unnamed-chunk-9-1.png) 
+##Which factors affect bat occupancy in unburned forest?
 
-```
-##         layer
-## Min.        1
-## 1st Qu.     2
-## Median      4
-## 3rd Qu.     5
-## Max.        5
-## NA's    66965
-```
+- explanatory variables = Abiotic variables (Altitud[*shown as band 1 in the next figure*], distance to road [*shown as layer in the next figure*], distance to water *being procesed at the time*, distance to road+trail *being procesed at the time*)
+
+![](Sampling_Design2_files/figure-html/unnamed-chunk-13-1.png) 
+
+##Is occupancy affected by presence of heterospecifics?
+
+###is bat occupancy affected by presence of other bats? (competition)
+
+- Explanatory variable, occupancy of other bats (based on this study)
+
+###is bat occupancy affected by the presence of preys?
+
+- Explanatory variable, athropod emergence (Loren's Study)
+
+###is bat occupancy affected by the presence of predators
+
+- Explanatory variables marten, and spotted owl layers from NFS (Spotted owl habitat foraging and nesting shown as *band 1.1* and *band 1.2* in the next figure and Marten habitat shown as *band 1.3* in the next figure)
+
+![](Sampling_Design2_files/figure-html/unnamed-chunk-14-1.png) 
+
+#Sampling desing and sampling unit
+
+In order for us to study bat occupancy and to spatially predict it using the factors described in the previous section, most of the diversity of the forest has to be included in the model. To include that variability, I classified the environments using the following layers (Topography, Intervals between fires, Forest Type, Distance to roads, Nesting Habitat quality for Spotted owl, foraging Habitat quality for Spotted owl, Habitat Quality for Marten) **[to be included tomorrow, distance to rivers, and distance to roads/path]**
+
+##Check for correlation between rasters
+
+First will scale every layer so that it goes from 0 to 1, in order for no layer to have more weight in the classification. And then we check the correlation between rasters. in the next graph/table, we see the relationship between our predictive variables. Here we see that we might want to take one of the two habitat quality layers for the Spotted Owl (R=0.74), and since we are using the spoted owl as a potential predator, we will keep the foraging habitat quality.
+
+
+
+![](Sampling_Design2_files/figure-html/unnamed-chunk-15-1.png) ![](Sampling_Design2_files/figure-html/unnamed-chunk-15-2.png) ![](Sampling_Design2_files/figure-html/unnamed-chunk-15-3.png) 
+
+#Clasification
+
+Now we will use kmeans to sort the area into 5 types of habitat using the abovementioned rasterstack, and it will be ploted with different colors for every type of environment.
+
+
+![](Sampling_Design2_files/figure-html/unnamed-chunk-16-1.png) 
 
 More info on how to do this clasification in *https://geoscripting-wur.github.io/AdvancedRasterAnalysis/*
 
 #separate layers acording to places with or without fire
 
+Now we will separate the whole area in two subtypes burned areas and non-buned areas, based on the burn severity layers
 
-```r
-df.bs1 <- data.frame(id=c(0,1,2,3,4,5), v=c(NA,1,1,1,1,1))
-fire <- subs(bs1, df.bs1,subswithNA=FALSE)
-fire<-projectRaster(fire, PNF)
-
-df.bs2 <- data.frame(id=c(NA,1), v=c(1,NA))
-not.fire <- subs(fire, df.bs2,subswithNA=FALSE)
-
-plot(fire, colNA="black")
-```
-
-![plot of chunk unnamed-chunk-10](figure/unnamed-chunk-10-1.png) 
-
-```r
-plot(not.fire, colNA="black")
-```
-
-![plot of chunk unnamed-chunk-10](figure/unnamed-chunk-10-2.png) 
-
-```r
-summary(fire)
-```
-
-```
-##             v
-## Min.        1
-## 1st Qu.     1
-## Median      1
-## 3rd Qu.     1
-## Max.        1
-## NA's    97885
-```
-
-```r
-summary(not.fire)
-```
-
-```
-##             v
-## Min.        1
-## 1st Qu.     1
-## Median      1
-## 3rd Qu.     1
-## Max.        1
-## NA's    10615
-```
-
-```r
-classes.with.fire<-classes2.1*fire
-classes.without.fire<-classes2.1*not.fire
-
-plot(classes.with.fire,colNA="black")
-```
-
-![plot of chunk unnamed-chunk-10](figure/unnamed-chunk-10-3.png) 
-
-```r
-summary(classes.with.fire)
-```
-
-```
-##         layer
-## Min.        1
-## 1st Qu.     2
-## Median      2
-## 3rd Qu.     4
-## Max.        5
-## NA's    98364
-```
-
-```r
-plot(classes.without.fire,colNA="black")
-```
-
-![plot of chunk unnamed-chunk-10](figure/unnamed-chunk-10-4.png) 
-
-```r
-summary(classes.without.fire)
-```
-
-```
-##         layer
-## Min.        1
-## 1st Qu.     3
-## Median      4
-## 3rd Qu.     5
-## Max.        5
-## NA's    77101
-```
+![](Sampling_Design2_files/figure-html/unnamed-chunk-17-1.png) ![](Sampling_Design2_files/figure-html/unnamed-chunk-17-2.png) 
 
 #Extract Random points from each habitat type with equal number in fire and non fire
 
+During the first year of sampling 120 samples will be colected, 60 in burned areas, and 60 in non-burned areas, within each, 12 random points will be sampled in each habtitat type defined by the K-means classification.
 
 
-```r
-set.seed(9)
+- 60 random points in not Fire, 12 random points per each environment type
+- 60 random points in Fire, 12 random points per each environment type
+- We plot the chosen random points over the topographic map, each color is an environment type, full circles are places where there was no fire, and full triangles, where there was a fire
 
-df.class.1f <- data.frame(id=c(1,2,3,4,5), v=c(1,NA,NA,NA,NA))
-class1f <- subs(classes.with.fire, df.class.1f,subswithNA=FALSE)
-points1f<-sampleRandom(class1f,3, na.rm=TRUE, xy=TRUE)
 
-df.class.1nf <- data.frame(id=c(1,2,3,4,5), v=c(1,NA,NA,NA,NA))
-class1nf <- subs(classes.without.fire, df.class.1nf,subswithNA=FALSE)
-points1nf<-sampleRandom(class1nf,3, na.rm=TRUE, xy=TRUE)
 
-df.class.2f <- data.frame(id=c(1,2,3,4,5), v=c(NA,2,NA,NA,NA))
-class2f <- subs(classes.with.fire, df.class.2f,subswithNA=FALSE)
-points2f<-sampleRandom(class2f,3, na.rm=TRUE, xy=TRUE)
 
-df.class.2nf <- data.frame(id=c(1,2,3,4,5), v=c(NA,2,NA,NA,NA))
-class2nf <- subs(classes.without.fire, df.class.2nf,subswithNA=FALSE)
-points2nf<-sampleRandom(class2nf,3, na.rm=TRUE, xy=TRUE)
+![](Sampling_Design2_files/figure-html/unnamed-chunk-19-1.png) 
 
-df.class.3f <- data.frame(id=c(1,2,3,4,5), v=c(NA,NA,3,NA,NA))
-class3f <- subs(classes.with.fire, df.class.3f,subswithNA=FALSE)
-points3f<-sampleRandom(class3f,3, na.rm=TRUE, xy=TRUE)
+###Values
 
-df.class.3nf <- data.frame(id=c(1,2,3,4,5), v=c(NA,NA,3,NA,NA))
-class3nf <- subs(classes.without.fire, df.class.3nf,subswithNA=FALSE)
-points3nf<-sampleRandom(class3nf,3, na.rm=TRUE, xy=TRUE)
 
-df.class.4f <- data.frame(id=c(1,2,3,4,5), v=c(NA,NA,NA,4,NA))
-class4f <- subs(classes.with.fire, df.class.4f,subswithNA=FALSE)
-points4f<-sampleRandom(class4f,3, na.rm=TRUE, xy=TRUE)
+Table: Mean value for every variable for each ID which combines prior classification (1 to 5) and fire or no fire (f or nf)
 
-df.class.4nf <- data.frame(id=c(1,2,3,4,5), v=c(NA,NA,NA,4,NA))
-class4nf <- subs(classes.without.fire, df.class.4nf,subswithNA=FALSE)
-points4nf<-sampleRandom(class4nf,3, na.rm=TRUE, xy=TRUE)
-
-df.class.5f <- data.frame(id=c(1,2,3,4,5), v=c(NA,NA,NA,NA,5))
-class5f <- subs(classes.with.fire, df.class.5f,subswithNA=FALSE)
-points5f<-sampleRandom(class5f,3, na.rm=TRUE, xy=TRUE)
-
-df.class.5nf <- data.frame(id=c(1,2,3,4,5), v=c(NA,NA,NA,NA,5))
-class5nf <- subs(classes.without.fire, df.class.5nf,subswithNA=FALSE)
-points5nf<-sampleRandom(class5nf,3, na.rm=TRUE, xy=TRUE)
-
-plot(classes2.1, colNA="white")
-points (points1f, col= "black", pch=21, bg="black")
-points (points1nf, col="black",pch=24,bg="black")
-points (points2f, col= "blue",pch=21,bg="blue")
-points (points2nf, col="blue", pch=24, bg="blue")
-points (points3f, col= "red",pch=21, bg="red")
-points (points3nf, col="red", pch=24,bg="red")
-points (points4f, col= "brown",pch=21,bg="brown")
-points (points4nf, col="brown", pch=24,bg="brown")
-points (points5f, col= "purple",pch=21,bg="purple")
-points (points5nf, col="purple", pch=24, bg="purple")
-```
-
-![plot of chunk unnamed-chunk-11](figure/unnamed-chunk-11-1.png) 
-
+ID        Height   Fire Interval   Distance to Road   Sage Stage   Distance to Water
+----  ----------  --------------  -----------------  -----------  ------------------
+1nf     915.8043        3.894636           245.0825     2.097246             0.00000
+1f      975.0202        4.679431           290.9402     1.751543             0.00000
+2nf    1407.3704        2.368097           415.2997     1.800400             0.00000
+2f     1410.7964        3.304737           377.6946     1.888302            54.12764
+3nf    1611.1194        5.888377           417.7510     3.578656             0.00000
+3f     1494.2475        5.476722           143.2402     3.521940            54.11404
+4nf    1878.8732       13.152985           376.0677     3.657062            27.08123
+4f     1788.5935       10.276782           494.8891     3.239066             0.00000
+5nf    1779.6352        5.083546           740.7329     8.083679            54.20625
+5f     1637.8580        6.165564           339.4208     6.256957            81.29806
 
 #Simulated sampling Dynamic modeling
 
@@ -483,56 +180,41 @@ points (points5nf, col="purple", pch=24, bg="purple")
 library("unmarked", lib.loc="~/R/win-library/3.2")
 ```
 
-```
-## Loading required package: reshape
-## Loading required package: Rcpp
-## 
-## Attaching package: 'unmarked'
-## 
-## The following objects are masked from 'package:raster':
-## 
-##     getData, projection
-## 
-## The following object is masked from 'package:sp':
-## 
-##     coordinates
-```
-
 ###First we simulate our detection history for 30 sites with four primary sampling periods, and three secondary sampling periods each.
 
 
-| s1.1| s1.2| s1.3| s2.1| s2.2| s2.3| s3.1| s3.2| s3.3| s4.1| s4.2| s4.3|
-|----:|----:|----:|----:|----:|----:|----:|----:|----:|----:|----:|----:|
-|    1|    1|    1|    1|    1|    1|    0|    1|    1|    1|    1|    1|
-|    1|    1|    1|    1|    1|    1|    0|    0|    1|    1|    1|    1|
-|    1|    1|    0|    1|    1|    1|    1|    1|    1|    1|    1|    1|
-|    1|    1|    1|    0|    1|    1|    1|    1|    1|    1|    1|    1|
-|    0|    1|    0|    1|    1|    1|    1|    1|    1|    1|    1|    1|
-|    0|    1|    1|    1|    1|    1|    1|    1|    1|    1|    1|    1|
-|    1|    1|    1|    1|    1|    1|    1|    1|    0|    1|    1|    0|
-|    1|    0|    1|    1|    1|    1|    1|    0|    1|    1|    1|    1|
-|    1|    1|    1|    1|    1|    1|    1|    1|    1|    1|    1|    1|
-|    1|    1|    1|    1|    1|    1|    1|    0|    1|    1|    1|    1|
-|    1|    0|    0|    1|    0|    0|    1|    1|    1|    0|    1|    1|
-|    1|    0|    0|    1|    0|    0|    1|    0|    0|    0|    0|    0|
-|    0|    0|    0|    0|    1|    1|    1|    1|    1|    0|    0|    1|
-|    1|    0|    0|    1|    1|    1|    0|    1|    1|    0|    1|    0|
-|    0|    1|    1|    0|    0|    0|    1|    0|    0|    1|    0|    1|
-|    0|    0|    0|    1|    1|    0|    1|    1|    0|    1|    0|    0|
-|    0|    1|    0|    1|    1|    0|    0|    0|    0|    1|    1|    0|
-|    0|    1|    0|    1|    0|    1|    0|    0|    0|    1|    0|    1|
-|    0|    0|    1|    1|    0|    0|    0|    0|    0|    0|    1|    0|
-|    1|    1|    0|    1|    0|    1|    1|    0|    0|    0|    0|    1|
-|    0|    0|    0|    0|    0|    0|    0|    0|    0|    0|    0|    0|
-|    0|    0|    1|    0|    1|    0|    0|    0|    0|    0|    0|    0|
-|    0|    0|    0|    1|    0|    0|    0|    0|    0|    0|    0|    0|
-|    0|    1|    1|    1|    0|    0|    0|    0|    0|    0|    0|    0|
-|    0|    0|    0|    0|    1|    0|    0|    1|    0|    1|    1|    0|
-|    0|    0|    0|    1|    1|    0|    0|    0|    0|    0|    0|    0|
-|    1|    0|    0|    0|    0|    1|    0|    0|    1|    0|    0|    1|
-|    1|    0|    0|    0|    1|    0|    0|    0|    0|    0|    0|    0|
-|    0|    0|    0|    0|    1|    1|    0|    0|    0|    0|    0|    0|
-|    0|    0|    0|    0|    0|    0|    0|    0|    1|    0|    0|    0|
+ s1.1   s1.2   s1.3   s2.1   s2.2   s2.3   s3.1   s3.2   s3.3   s4.1   s4.2   s4.3
+-----  -----  -----  -----  -----  -----  -----  -----  -----  -----  -----  -----
+    1      1      1      1      1      1      0      1      1      1      1      1
+    1      1      1      1      1      1      0      0      1      1      1      1
+    1      1      0      1      1      1      1      1      1      1      1      1
+    1      1      1      0      1      1      1      1      1      1      1      1
+    0      1      0      1      1      1      1      1      1      1      1      1
+    0      1      1      1      1      1      1      1      1      1      1      1
+    1      1      1      1      1      1      1      1      0      1      1      0
+    1      0      1      1      1      1      1      0      1      1      1      1
+    1      1      1      1      1      1      1      1      1      1      1      1
+    1      1      1      1      1      1      1      0      1      1      1      1
+    1      0      0      1      0      0      1      1      1      0      1      1
+    1      0      0      1      0      0      1      0      0      0      0      0
+    0      0      0      0      1      1      1      1      1      0      0      1
+    1      0      0      1      1      1      0      1      1      0      1      0
+    0      1      1      0      0      0      1      0      0      1      0      1
+    0      0      0      1      1      0      1      1      0      1      0      0
+    0      1      0      1      1      0      0      0      0      1      1      0
+    0      1      0      1      0      1      0      0      0      1      0      1
+    0      0      1      1      0      0      0      0      0      0      1      0
+    1      1      0      1      0      1      1      0      0      0      0      1
+    0      0      0      0      0      0      0      0      0      0      0      0
+    0      0      1      0      1      0      0      0      0      0      0      0
+    0      0      0      1      0      0      0      0      0      0      0      0
+    0      1      1      1      0      0      0      0      0      0      0      0
+    0      0      0      0      1      0      0      1      0      1      1      0
+    0      0      0      1      1      0      0      0      0      0      0      0
+    1      0      0      0      0      1      0      0      1      0      0      1
+    1      0      0      0      1      0      0      0      0      0      0      0
+    0      0      0      0      1      1      0      0      0      0      0      0
+    0      0      0      0      0      0      0      0      1      0      0      0
 
 This simulated data has some underlying characteristics:
 
@@ -808,4 +490,134 @@ model3
 ## 
 ## AIC: 486.0355
 ```
-###graph
+
+#APENDIX
+
+##Apendix 1
+
+
+Table: Values recorded for each selected sampling point toghether with it's ID
+
+   Long     Lat    Height   Fire Interval   Distance to Road   Sage Stage   Distance to Water  ID  
+-------  ------  --------  --------------  -----------------  -----------  ------------------  ----
+ 121.22   40.02    816.46            5.04               0.00         1.79                0.00  1nf 
+ 120.99   40.04   1009.02            2.27               0.00         1.96                0.00  1nf 
+ 121.09   40.01   1039.96            9.00               0.00         2.00                0.00  1nf 
+ 121.18   40.00   1055.73            2.98            1313.46         2.33                0.00  1nf 
+ 121.44   39.80    692.54            2.00               0.00         2.00                0.00  1nf 
+ 121.47   39.75    491.65            3.76             652.34         1.57                0.00  1nf 
+ 120.84   40.10   1131.19            4.85             324.47         2.93                0.00  1nf 
+ 121.01   40.05   1140.19            3.40               0.00         2.00                0.00  1nf 
+ 121.44   39.72    471.88            4.46             326.29         1.00                0.00  1nf 
+ 120.85   40.11   1130.94            3.27             324.43         2.00                0.00  1nf 
+ 121.43   39.74    833.99            2.42               0.00         2.31                0.00  1nf 
+ 121.02   40.05   1176.10            3.27               0.00         3.27                0.00  1nf 
+ 121.19   40.07   1138.89            5.63             534.18         2.00                0.00  1f  
+ 121.46   39.83   1133.58            5.00               0.00         1.82                0.00  1f  
+ 121.46   39.77    554.07            3.95               0.00         1.30                0.00  1f  
+ 121.27   40.01    924.52            2.92             424.21         1.33                0.00  1f  
+ 121.22   40.03    832.48            2.00               0.00         2.00                0.00  1f  
+ 121.14   40.09   1202.96            9.00               0.00         1.00                0.00  1f  
+ 121.24   40.03   1015.78            5.00             649.66         2.00                0.00  1f  
+ 121.35   39.86   1055.60            7.28             908.75         1.00                0.00  1f  
+ 121.11   40.10   1173.27            5.00             324.48         2.13                0.00  1f  
+ 120.79   40.15   1147.49            5.36             324.23         2.84                0.00  1f  
+ 121.29   39.96    835.38            2.83               0.00         1.59                0.00  1f  
+ 121.40   39.83    686.22            2.18             325.77         2.00                0.00  1f  
+ 120.83   40.08   1165.14            1.16               0.00         1.16                0.00  2nf 
+ 120.80   40.05   1333.67            3.59             424.21         1.00                0.00  2nf 
+ 120.80   40.06   1554.06            2.00             424.21         2.00                0.00  2nf 
+ 121.07   39.94   1154.73            2.34               0.00         1.37                0.00  2nf 
+ 120.83   40.12   1240.09            3.96             324.39         1.72                0.00  2nf 
+ 120.71   40.01   1637.90            2.00             534.36         2.00                0.00  2nf 
+ 120.84   40.16   1322.37            2.12             774.84         2.00                0.00  2nf 
+ 120.65   40.08   1491.07            2.00             324.58         2.00                0.00  2nf 
+ 120.92   40.18   1328.04            2.00            1428.19         2.00                0.00  2nf 
+ 120.97   40.14   1256.29            2.54               0.00         2.18                0.00  2nf 
+ 120.59   40.03   1704.53            2.65             424.21         2.16                0.00  2nf 
+ 120.80   40.08   1700.56            2.06             324.59         2.02                0.00  2nf 
+ 121.13   40.11   1294.74            3.54               0.00         3.00              324.43  2f  
+ 120.79   40.19   1301.64            2.00             324.05         1.17                0.00  2f  
+ 121.08   40.13   1532.44            2.00               0.00         2.00                0.00  2f  
+ 121.18   40.05   1268.23            2.13             974.11         2.10                0.00  2f  
+ 120.77   40.18   1546.57            2.07             424.21         2.07                0.00  2f  
+ 121.26   39.94   1504.14            5.00               0.00         1.00                0.00  2f  
+ 121.09   39.94   1317.19            2.04             534.53         2.01                0.00  2f  
+ 121.30   39.99   1282.18            5.00             975.03         2.00                0.00  2f  
+ 121.24   40.07   1437.02            5.00               0.00         2.03                0.00  2f  
+ 121.33   39.88   1435.92            5.00               0.00         1.69                0.00  2f  
+ 121.11   40.05   1671.22            3.43               0.00         1.43                0.00  2f  
+ 121.26   39.97   1338.25            2.45            1300.41         2.15              325.10  2f  
+ 120.87   40.21   1658.56            4.10             533.78         2.70                0.00  3nf 
+ 120.51   40.22   1883.36            5.35               0.00         3.25                0.00  3nf 
+ 121.19   39.99   1428.99            8.56            2545.26         4.70                0.00  3nf 
+ 120.77   40.10   1574.73            4.78             424.21         4.78                0.00  3nf 
+ 121.08   39.98   1513.23            6.76             325.05         2.00                0.00  3nf 
+ 120.72   40.12   1788.60            6.90               0.00         3.79                0.00  3nf 
+ 121.12   40.00   1524.62            5.24               0.00         3.00                0.00  3nf 
+ 120.85   40.04   1573.43            5.00               0.00         3.78                0.00  3nf 
+ 121.03   40.09   1581.12            5.00             534.11         5.00                0.00  3nf 
+ 120.70   40.12   1835.09            7.63               0.00         3.00                0.00  3nf 
+ 121.05   39.89   1650.44            6.35             325.50         3.94                0.00  3nf 
+ 121.06   39.97   1321.26            5.00             325.10         3.00                0.00  3nf 
+ 120.64   40.15   1678.42            4.82               0.00         4.82                0.00  3f  
+ 120.55   40.17   1706.50            5.00               0.00         3.36                0.00  3f  
+ 121.12   40.11   1285.69            5.00               0.00         3.00                0.00  3f  
+ 121.36   39.83   1396.31            6.13               0.00         3.17                0.00  3f  
+ 121.09   40.11   1248.35            5.64               0.00         2.76              324.43  3f  
+ 121.08   40.11   1223.04            9.00             534.06         1.60                0.00  3f  
+ 121.06   40.09   1789.61            5.00               0.00         4.12                0.00  3f  
+ 121.24   39.92   1452.79            5.00             534.61         5.55                0.00  3f  
+ 121.13   40.01   1581.51            5.00               0.00         3.00              324.94  3f  
+ 120.76   40.14   1798.88            5.00               0.00         3.00                0.00  3f  
+ 121.37   39.83   1404.44            5.13             325.79         4.13                0.00  3f  
+ 121.10   40.11   1365.42            5.00             324.43         3.76                0.00  3f  
+ 120.52   40.20   1894.35           14.25             324.03         3.58                0.00  4nf 
+ 120.48   40.19   1965.92           16.00               0.00         3.00                0.00  4nf 
+ 120.56   40.07   1677.93           16.00             649.22         3.58                0.00  4nf 
+ 120.58   39.98   1871.29           13.61               0.00         3.95                0.00  4nf 
+ 120.53   40.00   1852.45           15.39             324.97         2.97              324.97  4nf 
+ 120.45   39.93   1795.21           12.44             534.56         5.19                0.00  4nf 
+ 120.55   40.07   1667.79           15.57             324.63         2.44                0.00  4nf 
+ 120.68   40.10   2091.48            8.72            1061.84         5.25                0.00  4nf 
+ 120.51   40.09   1781.97           16.00               0.00         3.00                0.00  4nf 
+ 120.67   40.00   1978.30            8.21               0.00         3.00                0.00  4nf 
+ 121.16   39.89   1733.09           10.25            1293.55         4.91                0.00  4nf 
+ 120.63   40.01   2236.71           11.41               0.00         3.00                0.00  4nf 
+ 120.68   40.24   1766.99           11.00             533.67         3.34                0.00  4f  
+ 120.58   40.11   1820.25            9.89             424.21         4.09                0.00  4f  
+ 120.71   40.16   1949.12            8.69               0.00         2.23                0.00  4f  
+ 121.16   40.04   1590.00            9.15               0.00         2.79                0.00  4f  
+ 120.71   40.25   1755.68           11.00            1601.01         3.00                0.00  4f  
+ 120.64   40.22   1660.72           11.82               0.00         3.63                0.00  4f  
+ 121.11   40.13   1568.23            9.00               0.00         2.00                0.00  4f  
+ 120.70   40.21   1810.90           11.00             774.42         3.00                0.00  4f  
+ 120.80   40.27   1929.88           10.30             323.68         4.31                0.00  4f  
+ 121.19   40.03   1506.17           10.20             775.85         3.34                0.00  4f  
+ 120.74   40.19   2013.41           11.00             972.20         3.00                0.00  4f  
+ 120.63   40.26   2091.79           10.26             533.64         4.14                0.00  4f  
+ 120.43   39.96   1696.86            3.00             534.49        11.00                0.00  5nf 
+ 120.52   39.96   1668.65            3.00             325.14        11.00                0.00  5nf 
+ 121.20   39.89   1587.84            3.00             325.50         8.00                0.00  5nf 
+ 121.14   39.96   1809.56            8.83             325.16         5.99                0.00  5nf 
+ 121.19   39.90   1584.46            3.00             534.66         8.00                0.00  5nf 
+ 121.13   39.92   1949.94            7.25            1553.61         5.86              325.36  5nf 
+ 121.19   39.88   1592.18            3.00             424.21         8.00                0.00  5nf 
+ 121.13   39.93   2066.23            8.05            1301.20         5.37                0.00  5nf 
+ 121.22   39.97   1943.27            7.37             534.46         5.43              325.12  5nf 
+ 121.19   39.96   1991.67            8.50            1603.52         6.35                0.00  5nf 
+ 120.45   39.93   1796.73            3.00             776.64        11.00                0.00  5nf 
+ 120.47   39.97   1668.24            3.00             650.20        11.00                0.00  5nf 
+ 121.25   39.96   1521.28            7.00               0.00         6.00                0.00  5f  
+ 121.25   39.95   1647.73            7.00               0.00         6.00              325.19  5f  
+ 121.33   39.87   1302.56            4.98             424.21         5.94                0.00  5f  
+ 121.09   40.15   1396.87            9.70             324.23         7.33                0.00  5f  
+ 120.42   40.17   1729.92            5.58             424.21         5.63                0.00  5f  
+ 121.16   40.02   1046.65            6.98               0.00         5.90                0.00  5f  
+ 121.24   39.95   1952.34            7.00             534.53         6.00              325.21  5f  
+ 121.06   40.13   1800.07            5.00             324.34         5.78                0.00  5f  
+ 121.24   39.96   1826.39            7.75             534.50         5.63              325.17  5f  
+ 120.60   40.18   1537.78            3.00             533.83         8.00                0.00  5f  
+ 120.48   40.18   1976.98            5.00             648.17         6.88                0.00  5f  
+ 120.69   39.99   1915.73            5.00             325.03         6.00                0.00  5f  
+

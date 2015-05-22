@@ -12,3 +12,4 @@ reshape
 Rcpp
 unmarked
 knitr
+dplyr
