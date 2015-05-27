@@ -1,5 +1,7 @@
 ---
 output:
+  word_document: default
+  pdf_document: default
   html_document:
     keep_md: yes
 ---
@@ -32,10 +34,10 @@ bs <- readGDAL("C:/Users/usuario/Bats_California/layers/burn_severity.asc")
 bs<-raster (bs)
 topo <- readGDAL("C:/Users/usuario/Bats_California/layers/plumastopo.asc")
 topo<-raster (topo)
-Vegetation_existing <- readGDAL("C:/Users/usuario/Bats_California/layers/Vegetation_existing.asc")
+Vegetation_existing <- readGDAL("C:/Users/usuario/Bats_California/layers/VegTypeAll.asc")
 Vegetation_existing<-raster (Vegetation_existing)
-FireReturnIntervalDeparture <- readGDAL("C:/Users/usuario/Bats_California/layers/FireReturnIntervalDeparture.asc")
-FireReturnIntervalDeparture<-raster (FireReturnIntervalDeparture)
+FireReturnAll <- readGDAL("C:/Users/usuario/Bats_California/layers/FireReturnAll.asc")
+FireReturnAll<-raster (FireReturnAll)
 TreatmentsStorrie <- readGDAL("C:/Users/usuario/Bats_California/layers/TreatmentsStorrie.asc")
 TreatmentsStorrie<-raster (TreatmentsStorrie)
 FireHistory <- readGDAL("C:/Users/usuario/Bats_California/layers/FireHistory.asc")
@@ -66,7 +68,7 @@ bb<-projectRaster(bb1, PNF)
 bs<-projectRaster(bs1, PNF)
 bc<-projectRaster(bc1, PNF)
 Vegetation_existing<-projectRaster(Vegetation_existing, PNF)
-FireReturnIntervalDeparture<-projectRaster(FireReturnIntervalDeparture, PNF)
+FireReturnAll<-projectRaster(FireReturnAll, PNF)
 TreatmentsStorrie<-projectRaster(TreatmentsStorrie, PNF)
 FireHistory <-projectRaster(FireHistory, PNF)
 Goshawkforag <-projectRaster(Goshawkforag,PNF)
@@ -79,7 +81,7 @@ bc<-resample(bc, PNF)
 bb<-resample(bb, PNF)
 bs<-resample(bs, PNF)
 Vegetation_existing<-resample(Vegetation_existing, PNF, method="ngb")
-FireReturnIntervalDeparture<-resample(FireReturnIntervalDeparture, PNF)
+FireReturnAll<-resample(FireReturnAll, PNF)
 TreatmentsStorrie<-resample(TreatmentsStorrie, PNF)
 FireHistory<-resample(FireHistory, PNF)
 topo<-resample(topo,PNF)
@@ -87,31 +89,39 @@ Goshawkforag<-resample(Goshawkforag,PNF, method="ngb")
 GoshawkNEST <- resample(GoshawkNEST, PNF, method="ngb")
 TreatmentsStorrie[is.na(TreatmentsStorrie)] <- 0
 MartenHabit <- resample (MartenHabit, PNF, method="ngb")
-SeralStage <- resample (SeralStage, PNF, method="bilinear")
+SeralStage <- resample (SeralStage, PNF, method="ngb")
 ```
 
+```{r, echo=FALSE, results='hide',warning=FALSE}
+ratify(Vegetation_existing, count=TRUE)
+```
+
+
+```{r,echo=FALSE,warning=FALSE}
+FireReturnAll[FireReturnAll < 0] <- NA
+```
 #Introduction
 
-To study bat occupancy in the Plumas national forest by surveying acustically different areas of the forest, the three objective species for this survey are the Pallid bat, the Townsend's Long-eared bat, and the California Bat. Nevertheless, there is at least 14 species that form the bat ensemble in the national forest, the list of species is the following
+To study bat occupancy in the Plumas National Forest by surveying acustically different areas of the forest, the three objective species for this survey are the Pallid Bat, the Townsend's Long-eared Bat, and the California Bat. Nevertheless, there is at least 14 species that form the bat ensemble in the National Forest, the list of species is the following
 
-- Tadarida brasiliensis – free-tailed bat
-- *Antrozous pallidus - Pallid Bat*
-- Eptesicus fuscus - Big Brown Bat
-- Euderma maculatum - Spotted Bat
-- Lasionycteris noctivagans - Silvered-haired Bat
-- Lasiurus blossevillii - Western Red Bat
-- Lasiurus cinereus - Hoary Bat
-- *Corynorhinus townsendii - Townsend's Long-eared Bat*
-- *Myotis californicus - California Bat*
-- Myotis evotis - Long-eared Bat
-- Myotis lucifugus - Little Brown Bat
-- Myotis thysanodes - Fringed Bat
-- Myotis volans - Hairy-winged bat
-- Myotis yumanensis - Yuma myotis
+- *Tadarida brasiliensis* – free-tailed Bat
+- *Antrozous pallidus* - **Pallid Bat**
+- *Eptesicus fuscus* - Big Brown Bat
+- *Euderma maculatum* - Spotted Bat
+- *Lasionycteris noctivagans* - Silvered-haired Bat
+- *Lasiurus blossevillii* - Western Red Bat
+- *Lasiurus cinereus* - Hoary Bat
+- *Corynorhinus townsendii* - **Townsend's Long-eared Bat**
+- *Myotis californicus* - **California Bat**
+- *Myotis evotis* - Long-eared Bat
+- *Myotis lucifugus* - Little Brown Bat
+- *Myotis thysanodes* - Fringed Bat
+- *Myotis volans* - Hairy-winged bat
+- *Myotis yumanensis* - Yuma myotis
 
 ##Objective of the study
 
-To determine the factors that influence bat occupancy in heterogeneous environments of Plumas national forest, including areas corresponding to the moonlight fire and the Storrie fire. Comparing and compementing biotic and abiotic variables. 
+To determine the factors that influence bat occupancy in heterogeneous environments of Plumas National Forest, including areas corresponding to the Moonlight Fire and the Storrie Fire. Comparing and complementing biotic and abiotic variables. 
 
 ```{r, echo=FALSE, results='hide', warning=FALSE}
 roads.v <- readOGR(dsn="C:/Users/usuario/Bats_California/layers",layer="Roads")
@@ -138,7 +148,7 @@ riverdist.r<- riverdist.r*PNF
 
 ```
 
-# Specific resear questions and the factors that might influence them
+# Specific research questions and the factors that might influence them
 
 ##1. Which factors affect bat occupancy in burned forest?
         
@@ -147,14 +157,14 @@ riverdist.r<- riverdist.r*PNF
 -	Explanatory variable = burn age at sampling sites (mean number of years between fires for a given point and the time till the last fire for a given point).
 
 ```{r,echo=FALSE}
-burn.age<- stack(FireReturnIntervalDeparture, FireHistory)
+burn.age<- stack(FireReturnAll, FireHistory)
 names(burn.age)<- c("Fire Interval", "Fire History")
 plot(burn.age)
 ```
 
 ###Does bat occupancy differ with burn intensity
 
-- Explanatory variable = burn intensity (in the following figure we see the layers that will allow us to work with burn intensity, this layers are v.1= burn intensity of the soil, v.2= burn intensity of the canopy, and v.3= Burn intensity of the basal area)
+- Explanatory variable = burn intensity (in the following figure we see the layers that will allow us to work with burn intensity, this layers are burn intensity of the soil, burn intensity of the canopy, and Burn intensity of the basal area)
 
 ```{r, echo=FALSE}
 burn<- stack(bs,bc,bb)
@@ -165,13 +175,13 @@ plot(burn)
 ###Does bat occupancy differ with forest type
 
 - Explanatory variable = Stand type 
--	Explanatory variable = Forest type (type of forest typified in SeralStage, which is seen as band 1.1 in the next figure)
--	Explanatory variable = Historic burn age (Shown as mean year intervals in the next figure as band 1.2)
+-	Explanatory variable = Forest type (type of forest typified in SeralStageariabariables = Abiotic variables (Altitud, di
+-	Explanatory variable = Historic burn age 
 
 ```{r,echo=FALSE, cache=TRUE}
 
-Forest.Type <- stack(SeralStage,FireReturnIntervalDeparture)
-names(Forest.Type) <- c("Seral Stage", "Fire Interval")
+Forest.Type <- stack(Vegetation_existing,SeralStage,FireReturnAll)
+names(Forest.Type) <- c("Vegetation Type","Seral Stage", "Fire Interval")
 plot(Forest.Type)
 
 ```
@@ -193,11 +203,11 @@ plot(lidar.limit, add=TRUE, legend=FALSE)
 
 ##Which factors affect bat occupancy in unburned forest?
 
-- explanatory variables = Abiotic variables (Altitud[*shown as band 1 in the next figure*], distance to road [*shown as layer in the next figure*], distance to water *being procesed at the time*, distance to road+trail *being procesed at the time*)
+- explanatory vstance to road, distance to water)
 
 ```{r, echo=FALSE}
 abiotic <- stack(roaddist.r, topo, riverdist.r)
-names(abiotic)<-c("Road distance", "Altitud", "River istance")
+names(abiotic)<-c("Road distance", "Altitud", "River distance")
 plot(abiotic, colNA="black")
 ```
 
@@ -233,8 +243,8 @@ First will scale every layer so that it goes from 0 to 1, in order for no layer 
 
 ```{r,cache=FALSE, echo=FALSE, results='asis'}
 library("raster", lib.loc="~/R/win-library/3.2")
-AllLayers1 <-stack(topo,FireReturnIntervalDeparture,roaddist.r, SeralStage, riverdist.r)
-names(AllLayers1)<-c("Altitud","Fire Interval", "Distance Road", "Seral Stage", "Distance river")
+AllLayers1 <-stack(topo,FireReturnAll,roaddist.r, Vegetation_existing, riverdist.r)
+names(AllLayers1)<-c("Altitud","Fire Interval", "Distance Road", "Vegetation Type", "Distance river")
 AllLayers2<-AllLayers1*PNF
 names(AllLayers2)<-c("Altitud","Fire Interval", "Distance Road", "Seral Stage", "Distance river")
 plot (AllLayers2, colNA="black")
@@ -307,11 +317,14 @@ During the first year of sampling 120 samples will be colected, 60 in burned are
 
 
 ```{r,cache=FALSE, fig.height=6, fig.width=8, echo=FALSE}
+library(rgdal)
 set.seed(12)
 
 df.class.1f <- data.frame(id=c(1,2,3,4,5), v=c(1,NA,NA,NA,NA))
 class1f <- subs(classes.with.fire, df.class.1f,subswithNA=FALSE)
 points1f<-sampleRandom(class1f,12, na.rm=TRUE, xy=TRUE, sp=TRUE)
+#newlayers <- dir(path="C:/Users/usuario/Bats_California/new_layers")
+#writeOGR(points1f,newlayers,"fire1", driver="ESRI Shapefile")
 
 df.class.1nf <- data.frame(id=c(1,2,3,4,5), v=c(1,NA,NA,NA,NA))
 class1nf <- subs(classes.without.fire, df.class.1nf,subswithNA=FALSE)
@@ -351,7 +364,8 @@ points5nf<-sampleRandom(class5nf,12, na.rm=TRUE, xy=TRUE, sp=TRUE)
 
 ```
 
-```{r, echo=FALSE}
+```{r, echo=FALSE, cache=FALSE}
+library("rasterVis", lib.loc="~/R/win-library/3.2")
 topo.park<-(topo*PNF)
 arterial<-roads.v[roads.v$FUNCTIONAL=="A - ARTERIAL",]
 collector<-roads.v[roads.v$FUNCTIONAL=="C - COLLECTOR",]
@@ -362,7 +376,8 @@ levelplot(topo.park, contour=TRUE, margin=FALSE)+ layer(sp.points(points5nf, col
 
 ###Values
 
-```{r, echo=FALSE}
+```{r, echo=FALSE,cache=FALSE}
+library(dplyr)
 df.values<-extract(AllLayers1, points1nf, df=TRUE, method="simple")
 df.values<-df.values[,2:6]
 df.values<-cbind(points1nf$x, points1nf$y, df.values,rep("1nf", times=12))
@@ -647,3 +662,21 @@ library("knitr", lib.loc="~/R/win-library/3.2")
 kable(df.values, digits=2, col.names=c("Long", "Lat", "Height", "Fire Interval", "Distance to Road", "Sage Stage", "Distance to Water", "ID"), caption="Values recorded for each selected sampling point toghether with it's ID")
 ```
 
+```{r}
+slope<-terrain(topo, opt=c("slope"), unit= "degrees",neighbors=8)
+plot (slope)
+summary(slope)
+slope[slope > 20] <- NA
+slope.20<-slope*PNF
+plot(slope.20,colNA="black")
+slope[slope > 18] <- NA
+slope.18<-slope*PNF
+plot(slope.18,colNA="black")
+slope[slope > 15] <- NA
+slope.15<-slope*PNF
+plot(slope.15,colNA="black")
+
+slope[slope > 10] <- NA
+slope.10<-slope*PNF
+plot(slope.10,colNA="black")
+```
