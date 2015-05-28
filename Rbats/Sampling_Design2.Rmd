@@ -1,9 +1,9 @@
 ---
 output:
-  word_document: default
   pdf_document: default
   html_document:
     keep_md: yes
+  word_document: default
 ---
 
 #Bat survey in Plumas National Forest through the use of acoustic bat detectors
@@ -245,6 +245,13 @@ First will scale every layer so that it goes from 0 to 1, in order for no layer 
 library("raster", lib.loc="~/R/win-library/3.2")
 AllLayers1 <-stack(topo,FireReturnAll,roaddist.r, Vegetation_existing, riverdist.r)
 names(AllLayers1)<-c("Altitud","Fire Interval", "Distance Road", "Vegetation Type", "Distance river")
+slope<-terrain(topo, opt=c("slope"), unit= "degrees",neighbors=8)
+summary(slope)
+slope[slope > 15] <- NA
+slope.15<-slope*PNF
+plot(slope.15,colNA="black")
+slope.15[slope.15 >= 0] <- 1
+AllLayers1<-AllLayers1*slope.15
 AllLayers2<-AllLayers1*PNF
 names(AllLayers2)<-c("Altitud","Fire Interval", "Distance Road", "Seral Stage", "Distance river")
 plot (AllLayers2, colNA="black")
@@ -323,8 +330,7 @@ set.seed(12)
 df.class.1f <- data.frame(id=c(1,2,3,4,5), v=c(1,NA,NA,NA,NA))
 class1f <- subs(classes.with.fire, df.class.1f,subswithNA=FALSE)
 points1f<-sampleRandom(class1f,12, na.rm=TRUE, xy=TRUE, sp=TRUE)
-#newlayers <- dir(path="C:/Users/usuario/Bats_California/new_layers")
-#writeOGR(points1f,newlayers,"fire1", driver="ESRI Shapefile")
+
 
 df.class.1nf <- data.frame(id=c(1,2,3,4,5), v=c(1,NA,NA,NA,NA))
 class1nf <- subs(classes.without.fire, df.class.1nf,subswithNA=FALSE)
@@ -374,6 +380,21 @@ levelplot(topo.park, contour=TRUE, margin=FALSE)+ layer(sp.points(points5nf, col
 
 ```
 
+```{r}
+library(shapefiles)
+writePointsShape(points1f, "fire1")
+writePointsShape(points1nf, "nonfire1")
+writePointsShape(points2f, "fire2")
+writePointsShape(points2nf, "nonfire2")
+writePointsShape(points3f, "fire3")
+writePointsShape(points3nf, "nonfire3")
+writePointsShape(points4f, "fire4")
+writePointsShape(points4nf, "nonfire4")
+writePointsShape(points5f, "fire5")
+writePointsShape(points5nf, "nonfire5")
+
+
+```
 ###Values
 
 ```{r, echo=FALSE,cache=FALSE}
@@ -454,204 +475,152 @@ kable(by_group, col.names=c("ID","Height","Fire Interval", "Distance to Road", "
 library("unmarked", lib.loc="~/R/win-library/3.2")
 ```
 
-###First we simulate our detection history for 30 sites with four primary sampling periods, and three secondary sampling periods each.
+###First we simulate our detection history for our 120 sites with four primary sampling periods, and three secondary sampling periods each.
 ```{r, echo=FALSE}
 set.seed(20)
-s1.1a<-rbinom(n=10, size=1, prob=0.9)
-s1.1b<-rbinom(n=10, size=1, prob=0.4)
-s1.1c<-rbinom(n=10, size=1, prob=0.2)
-s1.2a<-rbinom(n=10, size=1, prob=0.9)
-s1.2b<-rbinom(n=10, size=1, prob=0.4)
-s1.2c<-rbinom(n=10, size=1, prob=0.2)
-s1.3a<-rbinom(n=10, size=1, prob=0.9)
-s1.3b<-rbinom(n=10, size=1, prob=0.4)
-s1.3c<-rbinom(n=10, size=1, prob=0.2)
+s1.1f<-rbinom(n=3, size=1, prob=0.8)
+s2.1f<-rbinom(n=3, size=1, prob=0.8)
+s3.1f<-rbinom(n=3, size=1, prob=0.8)
+s4.1f<-rbinom(n=3, size=1, prob=0.8)
+s5.1f<-rbinom(n=3, size=1, prob=0.8)
+s6.1f<-rbinom(n=3, size=1, prob=0.8)
+s7.1f<-rbinom(n=3, size=1, prob=0.8)
+s8.1f<-rbinom(n=3, size=1, prob=0.8)
+s9.1f<-rbinom(n=3, size=1, prob=0.8)
+s10.1f<-rbinom(n=3, size=1, prob=0.8)
+s11.1f<-rbinom(n=3, size=1, prob=0.8)
+s12.1f<-rbinom(n=3, size=1, prob=0.8)
 
-s1.1 <-c(s1.1a,s1.1b,s1.1c)
-s1.2 <-c(s1.2a,s1.2b,s1.2c)
-s1.3 <-c(s1.3a,s1.3b,s1.3c)
+s1.1nf<-rbinom(n=3, size=1, prob=0.85)
+s2.1nf<-rbinom(n=3, size=1, prob=0.85)
+s3.1nf<-rbinom(n=3, size=1, prob=0.85)
+s4.1nf<-rbinom(n=3, size=1, prob=0.85)
+s5.1nf<-rbinom(n=3, size=1, prob=0.85)
+s6.1nf<-rbinom(n=3, size=1, prob=0.85)
+s7.1nf<-rbinom(n=3, size=1, prob=0.85)
+s8.1nf<-rbinom(n=3, size=1, prob=0.85)
+s9.1nf<-rbinom(n=3, size=1, prob=0.85)
+s10.1nf<-rbinom(n=3, size=1, prob=0.85)
+s11.1nf<-rbinom(n=3, size=1, prob=0.85)
+s12.1nf<-rbinom(n=3, size=1, prob=0.85)
 
-s2.1a<-rbinom(n=10, size=1, prob=0.9)
-s2.1b<-rbinom(n=10, size=1, prob=0.4)
-s2.1c<-rbinom(n=10, size=1, prob=0.2)
-s2.2a<-rbinom(n=10, size=1, prob=0.9)
-s2.2b<-rbinom(n=10, size=1, prob=0.4)
-s2.2c<-rbinom(n=10, size=1, prob=0.2)
-s2.3a<-rbinom(n=10, size=1, prob=0.9)
-s2.3b<-rbinom(n=10, size=1, prob=0.4)
-s2.3c<-rbinom(n=10, size=1, prob=0.2)
+s1.2f<-rbinom(n=3, size=1, prob=0.65)
+s2.2f<-rbinom(n=3, size=1, prob=0.65)
+s3.2f<-rbinom(n=3, size=1, prob=0.65)
+s4.2f<-rbinom(n=3, size=1, prob=0.65)
+s5.2f<-rbinom(n=3, size=1, prob=0.65)
+s6.2f<-rbinom(n=3, size=1, prob=0.65)
+s7.2f<-rbinom(n=3, size=1, prob=0.65)
+s8.2f<-rbinom(n=3, size=1, prob=0.65)
+s9.2f<-rbinom(n=3, size=1, prob=0.65)
+s10.2f<-rbinom(n=3, size=1, prob=0.65)
+s11.2f<-rbinom(n=3, size=1, prob=0.65)
+s12.2f<-rbinom(n=3, size=1, prob=0.65)
 
-s2.1 <-c(s2.1a,s2.1b,s2.1c)
-s2.2 <-c(s2.2a,s2.2b,s2.2c)
-s2.3 <-c(s2.3a,s2.3b,s2.3c)
+s1.2nf<-rbinom(n=3, size=1, prob=0.70)
+s2.2nf<-rbinom(n=3, size=1, prob=0.70)
+s3.2nf<-rbinom(n=3, size=1, prob=0.70)
+s4.2nf<-rbinom(n=3, size=1, prob=0.70)
+s5.2nf<-rbinom(n=3, size=1, prob=0.70)
+s6.2nf<-rbinom(n=3, size=1, prob=0.70)
+s7.2nf<-rbinom(n=3, size=1, prob=0.70)
+s8.2nf<-rbinom(n=3, size=1, prob=0.70)
+s9.2nf<-rbinom(n=3, size=1, prob=0.70)
+s10.2nf<-rbinom(n=3, size=1, prob=0.70)
+s11.2nf<-rbinom(n=3, size=1, prob=0.70)
+s12.2nf<-rbinom(n=3, size=1, prob=0.70)
 
-s3.1a<-rbinom(n=10, size=1, prob=0.9)
-s3.1b<-rbinom(n=10, size=1, prob=0.4)
-s3.1c<-rbinom(n=10, size=1, prob=0.1)
-s3.2a<-rbinom(n=10, size=1, prob=0.9)
-s3.2b<-rbinom(n=10, size=1, prob=0.4)
-s3.2c<-rbinom(n=10, size=1, prob=0.2)
-s3.3a<-rbinom(n=10, size=1, prob=0.9)
-s3.3b<-rbinom(n=10, size=1, prob=0.4)
-s3.3c<-rbinom(n=10, size=1, prob=0.1)
+s1.3f<-rbinom(n=3, size=1, prob=0.45)
+s2.3f<-rbinom(n=3, size=1, prob=0.45)
+s3.3f<-rbinom(n=3, size=1, prob=0.45)
+s4.3f<-rbinom(n=3, size=1, prob=0.45)
+s5.3f<-rbinom(n=3, size=1, prob=0.45)
+s6.3f<-rbinom(n=3, size=1, prob=0.45)
+s7.3f<-rbinom(n=3, size=1, prob=0.45)
+s8.3f<-rbinom(n=3, size=1, prob=0.45)
+s9.3f<-rbinom(n=3, size=1, prob=0.45)
+s10.3f<-rbinom(n=3, size=1, prob=0.45)
+s11.3f<-rbinom(n=3, size=1, prob=0.45)
+s12.3f<-rbinom(n=3, size=1, prob=0.45)
 
-s3.1 <-c(s3.1a,s3.1b,s3.1c)
-s3.2 <-c(s3.2a,s3.2b,s3.2c)
-s3.3 <-c(s3.3a,s3.3b,s3.3c)
+s1.3nf<-rbinom(n=3, size=1, prob=0.50)
+s2.3nf<-rbinom(n=3, size=1, prob=0.50)
+s3.3nf<-rbinom(n=3, size=1, prob=0.50)
+s4.3nf<-rbinom(n=3, size=1, prob=0.50)
+s5.3nf<-rbinom(n=3, size=1, prob=0.50)
+s6.3nf<-rbinom(n=3, size=1, prob=0.50)
+s7.3nf<-rbinom(n=3, size=1, prob=0.50)
+s8.3nf<-rbinom(n=3, size=1, prob=0.50)
+s9.3nf<-rbinom(n=3, size=1, prob=0.50)
+s10.3nf<-rbinom(n=3, size=1, prob=0.50)
+s11.3nf<-rbinom(n=3, size=1, prob=0.50)
+s12.3nf<-rbinom(n=3, size=1, prob=0.50)
 
-s4.1a<-rbinom(n=10, size=1, prob=0.9)
-s4.1b<-rbinom(n=10, size=1, prob=0.4)
-s4.1c<-rbinom(n=10, size=1, prob=0.1)
-s4.2a<-rbinom(n=10, size=1, prob=0.9)
-s4.2b<-rbinom(n=10, size=1, prob=0.4)
-s4.2c<-rbinom(n=10, size=1, prob=0.1)
-s4.3a<-rbinom(n=10, size=1, prob=0.9)
-s4.3b<-rbinom(n=10, size=1, prob=0.4)
-s4.3c<-rbinom(n=10, size=1, prob=0.1)
+s1.4f<-rbinom(n=3, size=1, prob=0.25)
+s2.4f<-rbinom(n=3, size=1, prob=0.25)
+s3.4f<-rbinom(n=3, size=1, prob=0.25)
+s4.4f<-rbinom(n=3, size=1, prob=0.25)
+s5.4f<-rbinom(n=3, size=1, prob=0.25)
+s6.4f<-rbinom(n=3, size=1, prob=0.25)
+s7.4f<-rbinom(n=3, size=1, prob=0.25)
+s8.4f<-rbinom(n=3, size=1, prob=0.25)
+s9.4f<-rbinom(n=3, size=1, prob=0.25)
+s10.4f<-rbinom(n=3, size=1, prob=0.25)
+s11.4f<-rbinom(n=3, size=1, prob=0.25)
+s12.4f<-rbinom(n=3, size=1, prob=0.25)
 
-s4.1 <-c(s4.1a,s4.1b,s4.1c)
-s4.2 <-c(s4.2a,s4.2b,s4.2c)
-s4.3 <-c(s4.3a,s4.3b,s4.3c)
-sampling.ocup1<- cbind(s1.1,s1.2,s1.3,s2.1,s2.2,s2.3,s3.1,s3.2,s3.3,s4.1,s4.2,s4.3)
+s1.4nf<-rbinom(n=3, size=1, prob=0.30)
+s2.4nf<-rbinom(n=3, size=1, prob=0.30)
+s3.4nf<-rbinom(n=3, size=1, prob=0.30)
+s4.4nf<-rbinom(n=3, size=1, prob=0.30)
+s5.4nf<-rbinom(n=3, size=1, prob=0.30)
+s6.4nf<-rbinom(n=3, size=1, prob=0.30)
+s7.4nf<-rbinom(n=3, size=1, prob=0.30)
+s8.4nf<-rbinom(n=3, size=1, prob=0.30)
+s9.4nf<-rbinom(n=3, size=1, prob=0.30)
+s10.4nf<-rbinom(n=3, size=1, prob=0.30)
+s11.4nf<-rbinom(n=3, size=1, prob=0.30)
+s12.4nf<-rbinom(n=3, size=1, prob=0.30)
+
+s1.5f<-rbinom(n=3, size=1, prob=0.15)
+s2.5f<-rbinom(n=3, size=1, prob=0.15)
+s3.5f<-rbinom(n=3, size=1, prob=0.15)
+s4.5f<-rbinom(n=3, size=1, prob=0.15)
+s5.5f<-rbinom(n=3, size=1, prob=0.15)
+s6.5f<-rbinom(n=3, size=1, prob=0.15)
+s7.5f<-rbinom(n=3, size=1, prob=0.15)
+s8.5f<-rbinom(n=3, size=1, prob=0.15)
+s9.5f<-rbinom(n=3, size=1, prob=0.15)
+s10.5f<-rbinom(n=3, size=1, prob=0.15)
+s11.5f<-rbinom(n=3, size=1, prob=0.15)
+s12.5f<-rbinom(n=3, size=1, prob=0.15)
+
+s1.5nf<-rbinom(n=3, size=1, prob=0.10)
+s2.5nf<-rbinom(n=3, size=1, prob=0.10)
+s3.5nf<-rbinom(n=3, size=1, prob=0.10)
+s4.5nf<-rbinom(n=3, size=1, prob=0.10)
+s5.5nf<-rbinom(n=3, size=1, prob=0.10)
+s6.5nf<-rbinom(n=3, size=1, prob=0.10)
+s7.5nf<-rbinom(n=3, size=1, prob=0.10)
+s8.5nf<-rbinom(n=3, size=1, prob=0.10)
+s9.5nf<-rbinom(n=3, size=1, prob=0.10)
+s10.5nf<-rbinom(n=3, size=1, prob=0.10)
+s11.5nf<-rbinom(n=3, size=1, prob=0.10)
+s12.5nf<-rbinom(n=3, size=1, prob=0.10)
+
+sampling.ocup1<- rbind(s1.1nf,s2.1nf,s3.1nf,s4.1nf,s5.1nf, s6.1nf, s7.1nf,s8.1nf,s9.1nf,s10.1nf,s11.1nf,s12.1nf,s1.1f,s2.1f,s3.1f,s4.1f,s5.1f, s6.1f, s7.1f,s8.1f,s9.1f,s10.1f,s11.1f,s12.1f,s1.2nf,s2.2nf,s3.2nf,s4.2nf,s5.2nf, s6.2nf, s7.2nf,s8.2nf,s9.2nf,s10.2nf,s11.2nf,s12.2nf,s1.2f,s2.2f,s3.2f,s4.2f,s5.2f, s6.2f, s7.2f,s8.2f,s9.2f,s10.2f,s11.2f,s12.2f,s1.3nf,s2.3nf,s3.3nf,s4.3nf,s5.3nf, s6.3nf, s7.3nf,s8.3nf,s9.3nf,s10.3nf,s11.3nf,s12.3nf,s1.3f,s2.3f,s3.3f,s4.3f,s5.3f, s6.3f, s7.3f,s8.3f,s9.3f,s10.3f,s11.3f,s12.3f,s1.4nf,s2.4nf,s3.4nf,s4.4nf,s5.4nf, s6.4nf, s7.4nf,s8.4nf,s9.4nf,s10.4nf,s11.4nf,s12.4nf,s1.4f,s2.4f,s3.4f,s4.4f,s5.4f, s6.4f, s7.4f,s8.4f,s9.4f,s10.4f,s11.4f,s12.4f,s1.5nf,s2.5nf,s3.5nf,s4.5nf,s5.5nf, s6.5nf, s7.5nf,s8.5nf,s9.5nf,s10.5nf,s11.5nf,s12.5nf,s1.5f,s2.5f,s3.5f,s4.5f,s5.5f, s6.5f, s7.5f,s8.5f,s9.5f,s10.5f,s11.5f,s12.5f)
+
+sampling.cov<- df.values[,3:8]
+
+sim.occu<-unmarkedFrameOccu(y = sampling.ocup1, siteCovs = sampling.cov)
+plot(sim.occu,panel=10)
+model1.occu <- occu(~1 ~1, sim.occu)
+model2.occu <- occu(~Height + Fire_Interval + Distance_to_Road +  Sage_Stage +  Distance_to_Water + ID ~ 1,sim.occu)
+names(model2.occu)
+summary(model1.occu)
+summary(model2.occu)
 ```
-```{r,echo=FALSE}
-library("knitr", lib.loc="~/R/win-library/3.2")
-kable(sampling.ocup1)
 
-
-```
-
-This simulated data has some underlying characteristics:
-
-**environment a (top 10 rows, the best environment for bats, also occupancy increases with time)**
-```{r}
-mean(sampling.ocup1[1:10])
-```
-**environment b (rows 11 to 20, medium environment, occupancy stays the same)**
-```{r}
-mean(sampling.ocup1[11:20])
-```
-**environment c (rows 21 to 30) poor environment for bats, also there is extintion)**
-```{r}
-mean(sampling.ocup1[21:30])
-```
-
-Now we will simulate some variables for the site covariates.
-###Site cov static
-**the more variable 1, the better for bats**
-
-```{r, echo=FALSE}
-v.1a<-rnorm(n=10, mean=20, sd=0.7)
-v.1b<-rnorm(n=10, mean=10, sd=0.7)
-v.1c<-rnorm(n=10, mean=5, sd=0.7)
-
-v.1 <-c(v.1a,v.1b,v.1c)
-```
-
-```{r}
-mean(v.1[1:10])
-mean(v.1[11:20])
-mean(v.1[21:30])
-```
-
-
-###the less variable 2 better for bats
-```{r,echo=FALSE}
-v.2a<-rnorm(n=10, mean=20, sd=0.7)
-v.2b<-rnorm(n=10, mean=40, sd=0.7)
-v.2c<-rnorm(n=10, mean=60, sd=0.7)
-
-v.2 <-c(v.2a,v.2b,v.2c)
-```
-
-```{r}
-mean(v.2[1:10])
-mean(v.2[11:20])
-mean(v.2[21:30])
-```
-
-###variable 3 does not mater to bats
-
-```{r,echo=FALSE}
-v.3a<-rnorm(n=10, mean=20, sd=0.7)
-v.3b<-rnorm(n=10, mean=20, sd=0.7)
-v.3c<-rnorm(n=10, mean=20, sd=0.7)
-
-
-v.3 <-c(v.3a,v.3b,v.3c)
-```
-
-```{r}
-mean(v.3[1:10])
-mean(v.3[11:20])
-mean(v.3[21:30])
-```
-
-```{r}
-sampling.cov<- cbind(v.1,v.2, v.3)
-```
-###yearly colonization extintion variable
-
-```{r}
-temp1<-rnorm(n=30, mean=20, sd=10)
-temp2<-rnorm(n=30, mean=40, sd=10)
-temp3<-rnorm(n=30, mean=50, sd=10)
-temp4<-rnorm(n=30, mean=60, sd=10)
-
-
-temps <-cbind(temp1,temp2, temp3, temp4)
-```
-###observer within secondary it could be variable
-
-
-###observers dont vary in the model, they should all be the same
-
-```{r}
-obs1<-rnorm(n=30, mean=40, sd=0.7)
-obs2<-rnorm(n=30, mean=40, sd=0.7)
-obs3<-rnorm(n=30, mean=40, sd=0.7)
-obs4<-rnorm(n=30, mean=40, sd=0.7)
-obs5<-rnorm(n=30, mean=40, sd=0.7)
-obs6<-rnorm(n=30, mean=40, sd=0.7)
-obs7<-rnorm(n=30, mean=40, sd=0.7)
-obs8<-rnorm(n=30, mean=40, sd=0.7)
-obs9<-rnorm(n=30, mean=40, sd=0.7)
-obs10<-rnorm(n=30, mean=40, sd=0.7)
-obs11<-rnorm(n=30, mean=40, sd=0.7)
-obs12<-rnorm(n=30, mean=40, sd=0.7)
-
-observers1<-data.frame(cbind(obs1,obs2,obs3, obs4, obs5, obs6, obs7, obs8, obs9, obs10, obs11, obs12))
-
-observers2<-data.frame(cbind(obs1,obs2,obs3, obs4, obs5, obs6, obs7, obs8, obs9, obs10, obs11, obs12))
-
-observers<-list(observers1, observers2)
-names(observers) <-c("obs1", "obs2")
-```
-###primary model
-```{r}
-umf1 <- unmarkedMultFrame(y = sampling.ocup1, 
-                            siteCovs = data.frame(sampling.cov), 
-                            yearlySiteCovs=data.frame(temps),
-                            obsCovs=observers, numPrimary=3)
-```
-##Dynamic model
-first term static variables
-second term colonization (variable)
-third extintion (variable)
-detection (observer)
-###the best model should take into acount v.1 and v.2, but not v.3, it shouldn't take into acount observers
-
-```{r}
-model1 <- colext(~v.1+v.2+v.3, ~1, ~1, ~1, umf1)
-
-model2 <- colext(~1, ~1, ~1, ~1, umf1)
-
-model3 <- colext(~v.1+v.2, ~1, ~1, ~1, umf1) #this should be the best model
-model1
-model2
-model3
-
-```
 
 #APENDIX
 
@@ -660,23 +629,6 @@ model3
 ```{r,echo=FALSE, cache=FALSE}
 library("knitr", lib.loc="~/R/win-library/3.2")
 kable(df.values, digits=2, col.names=c("Long", "Lat", "Height", "Fire Interval", "Distance to Road", "Sage Stage", "Distance to Water", "ID"), caption="Values recorded for each selected sampling point toghether with it's ID")
-```
 
-```{r}
-slope<-terrain(topo, opt=c("slope"), unit= "degrees",neighbors=8)
-plot (slope)
-summary(slope)
-slope[slope > 20] <- NA
-slope.20<-slope*PNF
-plot(slope.20,colNA="black")
-slope[slope > 18] <- NA
-slope.18<-slope*PNF
-plot(slope.18,colNA="black")
-slope[slope > 15] <- NA
-slope.15<-slope*PNF
-plot(slope.15,colNA="black")
-
-slope[slope > 10] <- NA
-slope.10<-slope*PNF
-plot(slope.10,colNA="black")
+kable(sampling.ocup1, col.names=c("night1", "night2", "night3"), caption="Simulated Sampling values")
 ```
