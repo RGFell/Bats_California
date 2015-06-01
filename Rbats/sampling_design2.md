@@ -1,7 +1,8 @@
 
 #Bat survey in Plumas National Forest through the use of acoustic bat detectors
 ###author: Derek Corcoran
-####Last update: 2015-05-23
+####Last update: 2015-06-01
+
 
 
 
@@ -17,26 +18,26 @@
 
 #Introduction
 
-To study bat occupancy in the Plumas national forest by surveying acustically different areas of the forest, the three objective species for this survey are the Pallid bat, the Townsend's Long-eared bat, and the California Bat. Nevertheless, there is at least 14 species that form the bat ensemble in the national forest, the list of species is the following
+To study bat occupancy in the Plumas National Forest by surveying acustically different areas of the forest, the three objective species for this survey are the Pallid Bat, the Townsend's Long-eared Bat, and the California Bat. Nevertheless, there is at least 14 species that form the bat ensemble in the National Forest, the list of species is the following
 
-- Tadarida brasiliensis – free-tailed bat
-- *Antrozous pallidus - Pallid Bat*
-- Eptesicus fuscus - Big Brown Bat
-- Euderma maculatum - Spotted Bat
-- Lasionycteris noctivagans - Silvered-haired Bat
-- Lasiurus blossevillii - Western Red Bat
-- Lasiurus cinereus - Hoary Bat
-- *Corynorhinus townsendii - Townsend's Long-eared Bat*
-- *Myotis californicus - California Bat*
-- Myotis evotis - Long-eared Bat
-- Myotis lucifugus - Little Brown Bat
-- Myotis thysanodes - Fringed Bat
-- Myotis volans - Hairy-winged bat
-- Myotis yumanensis - Yuma myotis
+- *Tadarida brasiliensis* – free-tailed Bat
+- *Antrozous pallidus* - **Pallid Bat**
+- *Eptesicus fuscus* - Big Brown Bat
+- *Euderma maculatum* - Spotted Bat
+- *Lasionycteris noctivagans* - Silvered-haired Bat
+- *Lasiurus blossevillii* - Western Red Bat
+- *Lasiurus cinereus* - Hoary Bat
+- *Corynorhinus townsendii* - **Townsend's Long-eared Bat**
+- *Myotis californicus* - **California Bat**
+- *Myotis evotis* - Long-eared Bat
+- *Myotis lucifugus* - Little Brown Bat
+- *Myotis thysanodes* - Fringed Bat
+- *Myotis volans* - Hairy-winged bat
+- *Myotis yumanensis* - Yuma myotis
 
 ##Objective of the study
 
-To determine the factors that influence bat occupancy in heterogeneous environments of Plumas national forest, including areas corresponding to the moonlight fire and the Storrie fire. Comparing and compementing biotic and abiotic variables. 
+To determine the factors that influence bat occupancy in heterogeneous environments of Plumas National Forest, including areas corresponding to the Moonlight Fire and the Storrie Fire. Comparing and complementing biotic and abiotic variables. 
 
 
 
@@ -55,7 +56,7 @@ To determine the factors that influence bat occupancy in heterogeneous environme
 ## = "NHDFlowline"): Z-dimension discarded
 ```
 
-# Specific resear questions and the factors that might influence them
+# Specific research questions and the factors that might influence them
 
 ##1. Which factors affect bat occupancy in burned forest?
         
@@ -67,15 +68,15 @@ To determine the factors that influence bat occupancy in heterogeneous environme
 
 ###Does bat occupancy differ with burn intensity
 
-- Explanatory variable = burn intensity (in the following figure we see the layers that will allow us to work with burn intensity, this layers are v.1= burn intensity of the soil, v.2= burn intensity of the canopy, and v.3= Burn intensity of the basal area)
+- Explanatory variable = burn intensity (in the following figure we see the layers that will allow us to work with burn intensity, this layers are burn intensity of the soil, burn intensity of the canopy, and Burn intensity of the basal area)
 
 ![](Sampling_Design2_files/figure-html/unnamed-chunk-12-1.png) 
 
 ###Does bat occupancy differ with forest type
 
 - Explanatory variable = Stand type 
--	Explanatory variable = Forest type (type of forest typified in SeralStage, which is seen as band 1.1 in the next figure)
--	Explanatory variable = Historic burn age (Shown as mean year intervals in the next figure as band 1.2)
+-	Explanatory variable = Forest type (type of forest typified in SeralStageariabariables = Abiotic variables (Altitud, di
+-	Explanatory variable = Historic burn age 
 
 ![](Sampling_Design2_files/figure-html/unnamed-chunk-13-1.png) 
 
@@ -97,7 +98,7 @@ To determine the factors that influence bat occupancy in heterogeneous environme
 
 ##Which factors affect bat occupancy in unburned forest?
 
-- explanatory variables = Abiotic variables (Altitud[*shown as band 1 in the next figure*], distance to road [*shown as layer in the next figure*], distance to water *being procesed at the time*, distance to road+trail *being procesed at the time*)
+- explanatory vstance to road, distance to water)
 
 ![](Sampling_Design2_files/figure-html/unnamed-chunk-15-1.png) 
 
@@ -110,12 +111,6 @@ To determine the factors that influence bat occupancy in heterogeneous environme
 ###is bat occupancy affected by the presence of preys?
 
 - Explanatory variable, athropod emergence (Loren's Study)
-
-###is bat occupancy affected by the presence of predators
-
-- Explanatory variables marten, and spotted owl layers from NFS (Spotted owl habitat foraging and nesting shown as *band 1.1* and *band 1.2* in the next figure and Marten habitat shown as *band 1.3* in the next figure)
-
-![](Sampling_Design2_files/figure-html/unnamed-chunk-16-1.png) 
 
 #Sampling desing and sampling unit
 
@@ -132,14 +127,21 @@ First will scale every layer so that it goes from 0 to 1, in order for no layer 
 ## Loading required package: sp
 ```
 
-![](Sampling_Design2_files/figure-html/unnamed-chunk-17-1.png) ![](Sampling_Design2_files/figure-html/unnamed-chunk-17-2.png) ![](Sampling_Design2_files/figure-html/unnamed-chunk-17-3.png) 
+               slope
+Min.        0.000000
+1st Qu.     2.873498
+Median      5.359555
+3rd Qu.     8.648955
+Max.       28.828351
+NA's    35684.000000
+![](Sampling_Design2_files/figure-html/unnamed-chunk-16-1.png) ![](Sampling_Design2_files/figure-html/unnamed-chunk-16-2.png) ![](Sampling_Design2_files/figure-html/unnamed-chunk-16-3.png) ![](Sampling_Design2_files/figure-html/unnamed-chunk-16-4.png) 
 
 #Clasification
 
 Now we will use kmeans to sort the area into 5 types of habitat using the abovementioned rasterstack, and it will be ploted with different colors for every type of environment.
 
 
-![](Sampling_Design2_files/figure-html/unnamed-chunk-18-1.png) 
+![](Sampling_Design2_files/figure-html/unnamed-chunk-17-1.png) 
 
 More info on how to do this clasification in *https://geoscripting-wur.github.io/AdvancedRasterAnalysis/*
 
@@ -147,7 +149,7 @@ More info on how to do this clasification in *https://geoscripting-wur.github.io
 
 Now we will separate the whole area in two subtypes burned areas and non-buned areas, based on the burn severity layers
 
-![](Sampling_Design2_files/figure-html/unnamed-chunk-19-1.png) ![](Sampling_Design2_files/figure-html/unnamed-chunk-19-2.png) 
+![](Sampling_Design2_files/figure-html/unnamed-chunk-18-1.png) ![](Sampling_Design2_files/figure-html/unnamed-chunk-18-2.png) 
 
 #Extract Random points from each habitat type with equal number in fire and non fire
 
@@ -160,6 +162,15 @@ During the first year of sampling 120 samples will be colected, 60 in burned are
 
 
 
+```
+## rgdal: version: 0.9-2, (SVN revision 526)
+## Geospatial Data Abstraction Library extensions to R successfully loaded
+## Loaded GDAL runtime: GDAL 1.11.2, released 2015/02/10
+## Path to GDAL shared files: C:/Users/usuario/Documents/R/win-library/3.2/rgdal/gdal
+## GDAL does not use iconv for recoding strings.
+## Loaded PROJ.4 runtime: Rel. 4.9.1, 04 March 2015, [PJ_VERSION: 491]
+## Path to PROJ.4 shared files: C:/Users/usuario/Documents/R/win-library/3.2/rgdal/proj
+```
 
 
 ```
@@ -168,25 +179,45 @@ During the first year of sampling 120 samples will be colected, 60 in burned are
 ## Loading required package: RColorBrewer
 ```
 
-![](Sampling_Design2_files/figure-html/unnamed-chunk-21-1.png) 
+![](Sampling_Design2_files/figure-html/unnamed-chunk-20-1.png) 
+
 
 ###Values
+
+
+```
+## 
+## Attaching package: 'dplyr'
+## 
+## The following objects are masked from 'package:raster':
+## 
+##     intersect, select, union
+## 
+## The following object is masked from 'package:stats':
+## 
+##     filter
+## 
+## The following objects are masked from 'package:base':
+## 
+##     intersect, setdiff, setequal, union
+```
+
 
 
 Table: Mean value for every variable for each ID which combines prior classification (1 to 5) and fire or no fire (f or nf)
 
 ID       Height   Fire Interval   Distance to Road   Sage Stage   Distance to Water
 ----  ---------  --------------  -----------------  -----------  ------------------
-1nf    1197.845       -2.609845           170.4107    15.936056             0.00000
-1f     1222.889        6.992421           591.0009    16.385627             0.00000
-2nf    1690.710     -591.968940           604.5243     8.919113            54.02922
-2f     1426.504     -654.369502           272.1700     9.460569            27.12199
-3nf    1751.129       16.665731           324.0886     4.355227            27.16567
-3f     1677.121       13.078462           459.2075     3.851336            27.15213
-4nf    1798.252      -39.535105           380.1112    15.186496             0.00000
-4f     1725.804       15.743448           207.7010    15.003658             0.00000
-5nf    1022.439      -21.384715           365.6794     5.083759            27.25722
-5f     1216.994      -12.469844           713.0377     6.514431            27.09332
+1nf    1143.428        18.92636           70.70175    14.687060             0.00000
+1f     1066.892        16.14099          381.48419    14.475234             0.00000
+2nf    1798.345        14.70257          135.51784     4.956801             0.00000
+2f     1733.110        16.35523          234.08921     5.477256             0.00000
+3nf    1741.085        15.92650          277.42844     6.558292           342.73342
+3f     1665.289        15.78163          305.06839     4.767730           341.64344
+4nf    1777.849        24.37396          304.86406    16.390226            62.43815
+4f     1673.955        13.77037          567.23379    14.868093            27.02978
+5nf    1092.211        14.48702          189.65352     5.285532             0.00000
+5f     1169.350        13.36700          315.70665     5.507521             0.00000
 
 #Simulated sampling Dynamic modeling
 
@@ -195,315 +226,44 @@ ID       Height   Fire Interval   Distance to Road   Sage Stage   Distance to Wa
 library("unmarked", lib.loc="~/R/win-library/3.2")
 ```
 
-###First we simulate our detection history for 30 sites with four primary sampling periods, and three secondary sampling periods each.
+###First we simulate our detection history for our 120 sites with four primary sampling periods, and three secondary sampling periods each.
+![](Sampling_Design2_files/figure-html/unnamed-chunk-24-1.png) 
 
 
- s1.1   s1.2   s1.3   s2.1   s2.2   s2.3   s3.1   s3.2   s3.3   s4.1   s4.2   s4.3
------  -----  -----  -----  -----  -----  -----  -----  -----  -----  -----  -----
-    1      1      1      1      1      1      0      1      1      1      1      1
-    1      1      1      1      1      1      0      0      1      1      1      1
-    1      1      0      1      1      1      1      1      1      1      1      1
-    1      1      1      0      1      1      1      1      1      1      1      1
-    0      1      0      1      1      1      1      1      1      1      1      1
-    0      1      1      1      1      1      1      1      1      1      1      1
-    1      1      1      1      1      1      1      1      0      1      1      0
-    1      0      1      1      1      1      1      0      1      1      1      1
-    1      1      1      1      1      1      1      1      1      1      1      1
-    1      1      1      1      1      1      1      0      1      1      1      1
-    1      0      0      1      0      0      1      1      1      0      1      1
-    1      0      0      1      0      0      1      0      0      0      0      0
-    0      0      0      0      1      1      1      1      1      0      0      1
-    1      0      0      1      1      1      0      1      1      0      1      0
-    0      1      1      0      0      0      1      0      0      1      0      1
-    0      0      0      1      1      0      1      1      0      1      0      0
-    0      1      0      1      1      0      0      0      0      1      1      0
-    0      1      0      1      0      1      0      0      0      1      0      1
-    0      0      1      1      0      0      0      0      0      0      1      0
-    1      1      0      1      0      1      1      0      0      0      0      1
-    0      0      0      0      0      0      0      0      0      0      0      0
-    0      0      1      0      1      0      0      0      0      0      0      0
-    0      0      0      1      0      0      0      0      0      0      0      0
-    0      1      1      1      0      0      0      0      0      0      0      0
-    0      0      0      0      1      0      0      1      0      1      1      0
-    0      0      0      1      1      0      0      0      0      0      0      0
-    1      0      0      0      0      1      0      0      1      0      0      1
-    1      0      0      0      1      0      0      0      0      0      0      0
-    0      0      0      0      1      1      0      0      0      0      0      0
-    0      0      0      0      0      0      0      0      1      0      0      0
+```
+##        nPars    AIC delta   AICwt cumltvWt
+## Model1     2 481.49  0.00 0.99931     1.00
+## Model3     7 496.92 15.43 0.00045     1.00
+## Model2     8 498.12 16.62 0.00025     1.00
+```
 
-This simulated data has some underlying characteristics:
+![](Sampling_Design2_files/figure-html/unnamed-chunk-25-1.png) ![](Sampling_Design2_files/figure-html/unnamed-chunk-25-2.png) 
 
-**environment a (top 10 rows, the best environment for bats, also occupancy increases with time)**
 
-```r
-mean(sampling.ocup1[1:10])
+
+![](Sampling_Design2_files/figure-html/unnamed-chunk-27-1.png) 
+
+```
+##    Predicted    
+##  Min.   :0.08   
+##  1st Qu.:0.52   
+##  Median :0.58   
+##  Mean   :0.58   
+##  3rd Qu.:0.64   
+##  Max.   :0.87   
+##  NA's   :74441
 ```
 
 ```
-## [1] 0.8
-```
-**environment b (rows 11 to 20, medium environment, occupancy stays the same)**
-
-```r
-mean(sampling.ocup1[11:20])
+## [1] 19720.2
 ```
 
 ```
-## [1] 0.4
-```
-**environment c (rows 21 to 30) poor environment for bats, also there is extintion)**
-
-```r
-mean(sampling.ocup1[21:30])
+## [1] 14501.36
 ```
 
 ```
-## [1] 0.2
-```
-
-Now we will simulate some variables for the site covariates.
-###Site cov static
-**the more variable 1, the better for bats**
-
-
-
-
-```r
-mean(v.1[1:10])
-```
-
-```
-## [1] 20.39816
-```
-
-```r
-mean(v.1[11:20])
-```
-
-```
-## [1] 9.724912
-```
-
-```r
-mean(v.1[21:30])
-```
-
-```
-## [1] 4.93219
-```
-
-
-###the less variable 2 better for bats
-
-
-
-```r
-mean(v.2[1:10])
-```
-
-```
-## [1] 19.85988
-```
-
-```r
-mean(v.2[11:20])
-```
-
-```
-## [1] 40.04326
-```
-
-```r
-mean(v.2[21:30])
-```
-
-```
-## [1] 60.12082
-```
-
-###variable 3 does not mater to bats
-
-
-
-
-```r
-mean(v.3[1:10])
-```
-
-```
-## [1] 19.89459
-```
-
-```r
-mean(v.3[11:20])
-```
-
-```
-## [1] 19.93174
-```
-
-```r
-mean(v.3[21:30])
-```
-
-```
-## [1] 20.13167
-```
-
-
-```r
-sampling.cov<- cbind(v.1,v.2, v.3)
-```
-###yearly colonization extintion variable
-
-
-```r
-temp1<-rnorm(n=30, mean=20, sd=10)
-temp2<-rnorm(n=30, mean=40, sd=10)
-temp3<-rnorm(n=30, mean=50, sd=10)
-temp4<-rnorm(n=30, mean=60, sd=10)
-
-
-temps <-cbind(temp1,temp2, temp3, temp4)
-```
-###observer within secondary it could be variable
-
-
-###observers dont vary in the model, they should all be the same
-
-
-```r
-obs1<-rnorm(n=30, mean=40, sd=0.7)
-obs2<-rnorm(n=30, mean=40, sd=0.7)
-obs3<-rnorm(n=30, mean=40, sd=0.7)
-obs4<-rnorm(n=30, mean=40, sd=0.7)
-obs5<-rnorm(n=30, mean=40, sd=0.7)
-obs6<-rnorm(n=30, mean=40, sd=0.7)
-obs7<-rnorm(n=30, mean=40, sd=0.7)
-obs8<-rnorm(n=30, mean=40, sd=0.7)
-obs9<-rnorm(n=30, mean=40, sd=0.7)
-obs10<-rnorm(n=30, mean=40, sd=0.7)
-obs11<-rnorm(n=30, mean=40, sd=0.7)
-obs12<-rnorm(n=30, mean=40, sd=0.7)
-
-observers1<-data.frame(cbind(obs1,obs2,obs3, obs4, obs5, obs6, obs7, obs8, obs9, obs10, obs11, obs12))
-
-observers2<-data.frame(cbind(obs1,obs2,obs3, obs4, obs5, obs6, obs7, obs8, obs9, obs10, obs11, obs12))
-
-observers<-list(observers1, observers2)
-names(observers) <-c("obs1", "obs2")
-```
-###primary model
-
-```r
-umf1 <- unmarkedMultFrame(y = sampling.ocup1, 
-                            siteCovs = data.frame(sampling.cov), 
-                            yearlySiteCovs=data.frame(temps),
-                            obsCovs=observers, numPrimary=3)
-```
-##Dynamic model
-first term static variables
-second term colonization (variable)
-third extintion (variable)
-detection (observer)
-###the best model should take into acount v.1 and v.2, but not v.3, it shouldn't take into acount observers
-
-
-```r
-model1 <- colext(~v.1+v.2+v.3, ~1, ~1, ~1, umf1)
-
-model2 <- colext(~1, ~1, ~1, ~1, umf1)
-
-model3 <- colext(~v.1+v.2, ~1, ~1, ~1, umf1) #this should be the best model
-model1
-```
-
-```
-## 
-## Call:
-## colext(psiformula = ~v.1 + v.2 + v.3, gammaformula = ~1, epsilonformula = ~1, 
-##     pformula = ~1, data = umf1)
-## 
-## Initial:
-##             Estimate    SE       z P(>|z|)
-## (Intercept)   0.0822  62.0 0.00133   0.999
-## v.1           1.1739  73.2 0.01604   0.987
-## v.2           2.6773 108.4 0.02471   0.980
-## v.3           1.6349  82.4 0.01985   0.984
-## 
-## Colonization:
-##  Estimate   SE      z P(>|z|)
-##     -0.69 1.23 -0.562   0.574
-## 
-## Extinction:
-##  Estimate    SE     z  P(>|z|)
-##     -1.71 0.419 -4.08 4.56e-05
-## 
-## Detection:
-##  Estimate    SE    z P(>|z|)
-##     0.291 0.121 2.41  0.0162
-## 
-## AIC: 488.0362
-```
-
-```r
-model2
-```
-
-```
-## 
-## Call:
-## colext(psiformula = ~1, gammaformula = ~1, epsilonformula = ~1, 
-##     pformula = ~1, data = umf1)
-## 
-## Initial:
-##  Estimate    SE    z P(>|z|)
-##      1.78 0.569 3.13 0.00174
-## 
-## Colonization:
-##  Estimate    SE      z P(>|z|)
-##    -0.104 0.719 -0.145   0.885
-## 
-## Extinction:
-##  Estimate    SE     z  P(>|z|)
-##      -1.8 0.433 -4.15 3.36e-05
-## 
-## Detection:
-##  Estimate    SE    z  P(>|z|)
-##      0.45 0.129 3.48 0.000492
-## 
-## AIC: 470.846
-```
-
-```r
-model3
-```
-
-```
-## 
-## Call:
-## colext(psiformula = ~v.1 + v.2, gammaformula = ~1, epsilonformula = ~1, 
-##     pformula = ~1, data = umf1)
-## 
-## Initial:
-##             Estimate    SE       z P(>|z|)
-## (Intercept)   0.0822  58.9 0.00139   0.999
-## v.1           1.1733  69.6 0.01686   0.987
-## v.2           2.6759 103.0 0.02598   0.979
-## 
-## Colonization:
-##  Estimate   SE      z P(>|z|)
-##     -0.69 1.23 -0.562   0.574
-## 
-## Extinction:
-##  Estimate    SE     z  P(>|z|)
-##     -1.71 0.419 -4.08 4.56e-05
-## 
-## Detection:
-##  Estimate    SE    z P(>|z|)
-##     0.291 0.121 2.41  0.0162
-## 
-## AIC: 486.0355
+## [1] 24518.73
 ```
 
 #APENDIX
@@ -513,207 +273,254 @@ model3
 
 Table: Values recorded for each selected sampling point toghether with it's ID
 
-   Long     Lat    Height   Fire Interval   Distance to Road   Sage Stage   Distance to Water  ID  
--------  ------  --------  --------------  -----------------  -----------  ------------------  ----
- 120.96   39.99   1113.11           16.00             325.01        18.00                0.00  1nf 
- 120.98   40.03   1132.27           18.03             324.83        18.00                0.00  1nf 
- 120.89   39.97   1200.33           15.04               0.00        14.94                0.00  1nf 
- 120.88   39.96   1173.06           16.63               0.00        12.83                0.00  1nf 
- 120.79   39.91   1268.44           16.00             534.64        18.00                0.00  1nf 
- 121.42   39.75   1058.93           12.80               0.00        12.25                0.00  1nf 
- 120.83   40.09   1116.88         -197.89               0.00        15.72                0.00  1nf 
- 120.67   40.04   1419.19           16.00             534.24        18.00                0.00  1nf 
- 121.36   39.69    848.66           16.08               0.00        17.55                0.00  1nf 
- 120.80   40.11   1242.23           12.99               0.00        11.95                0.00  1nf 
- 120.55   39.74   1420.45           11.00             326.20        16.00                0.00  1nf 
- 120.70   40.04   1380.59           16.00               0.00        18.00                0.00  1nf 
- 120.82   40.17   1395.69           16.19             848.42        18.00                0.00  1f  
- 121.23   39.74   1348.48           15.97               0.00        17.92                0.00  1f  
- 121.29   39.67    804.17           16.00             326.55        17.19                0.00  1f  
- 121.27   40.05   1388.46           11.00            2124.84        12.00                0.00  1f  
- 121.11   40.10   1194.40           25.42             424.21        13.21                0.00  1f  
- 120.78   40.19   1274.34         -106.35             324.05        17.28                0.00  1f  
- 121.09   40.10   1386.49           28.30             424.21        17.41                0.00  1f  
- 121.35   39.85    999.21           14.12             908.78        13.12                0.00  1f  
- 120.79   40.20   1459.12           16.00             648.06        18.00                0.00  1f  
- 120.77   40.21   1326.47           15.26               0.00        16.49                0.00  1f  
- 121.18   40.02   1315.20           16.00            1062.89        18.00                0.00  1f  
- 121.34   39.74    782.64           16.00               0.00        18.00                0.00  1f  
- 120.45   39.96   1664.41         -313.32             534.51        10.63                0.00  2nf 
- 120.34   39.91   1911.61         -699.58            1301.57        13.07                0.00  2nf 
- 120.29   39.93   2123.75         -538.63             776.70         7.69                0.00  2nf 
- 121.35   39.65    939.60         -734.65             326.64        10.46                0.00  2nf 
- 120.61   40.05   1657.76         -530.30            1313.41        14.77                0.00  2nf 
- 120.51   39.75   1671.11         -729.64            1070.17         3.73                0.00  2nf 
- 120.81   40.12   1078.75         -999.00             648.75         4.00              324.38  2nf 
- 120.36   39.96   1891.77         -393.10             424.21        10.36                0.00  2nf 
- 120.52   40.21   1983.61         -403.61             533.78        10.39              323.98  2nf 
- 120.36   40.09   1750.29         -549.58             324.56         8.35                0.00  2nf 
- 120.90   39.81   1941.00         -697.47               0.00         4.89                0.00  2nf 
- 120.43   39.96   1674.85         -514.75               0.00         8.68                0.00  2nf 
- 121.19   40.04   1702.91         -352.31             324.78        10.24                0.00  2f  
- 120.58   40.18   1543.07         -942.50               0.00        11.28                0.00  2f  
- 120.30   40.07   1796.92         -617.69               0.00         4.37                0.00  2f  
- 121.36   39.90    684.18         -572.82               0.00        12.93                0.00  2f  
- 120.58   40.16   1644.59         -491.82               0.00         3.50                0.00  2f  
- 121.38   39.83   1031.00         -429.13             777.46         8.40                0.00  2f  
- 120.25   39.84   1635.93         -621.20             534.83         7.65                0.00  2f  
- 120.33   39.87   2049.70         -780.87             325.57        12.72                0.00  2f  
- 120.32   39.91   2018.50         -667.24             325.39         9.82                0.00  2f  
- 121.02   39.72   1622.63         -682.35             652.55        10.79                0.00  2f  
- 121.36   39.89    719.03         -999.00             325.46        11.60              325.46  2f  
- 121.39   39.86    669.60         -695.51               0.00        10.22                0.00  2f  
- 120.42   40.08   1910.09           16.00             324.59         3.00                0.00  3nf 
- 120.50   40.09   1784.05           11.00             649.04         6.87                0.00  3nf 
- 120.93   39.78   1727.74           16.00             325.99         6.92              325.99  3nf 
- 120.59   39.96   2044.71           16.00               0.00         3.00                0.00  3nf 
- 120.71   39.78   1657.38           15.98             535.00         6.99                0.00  3nf 
- 121.06   39.98   1481.47           11.56             325.07         3.00                0.00  3nf 
- 121.13   39.80   1576.90           16.97             325.90         2.61                0.00  3nf 
- 121.06   39.85   1628.24           15.06               0.00         7.98                0.00  3nf 
- 120.74   39.94   2046.51           21.94               0.00         3.21                0.00  3nf 
- 120.72   39.98   1813.63           17.47             424.21         2.85                0.00  3nf 
- 120.85   39.69   1637.60           26.00             979.26         2.00                0.00  3nf 
- 120.93   39.77   1705.25           16.00               0.00         3.81                0.00  3nf 
- 121.20   40.16   1485.50           11.42            1829.58         3.00                0.00  3f  
- 120.69   40.18   1924.66           14.36             324.08         3.94                0.00  3f  
- 120.45   40.13   1792.21           11.00             533.99         4.03                0.00  3f  
- 120.63   39.82   1791.21           16.00               0.00         3.11              325.83  3f  
- 120.31   40.13   1636.63           11.00            1550.21         6.00                0.00  3f  
- 120.61   40.12   1696.70           15.81               0.00         5.08                0.00  3f  
- 121.20   40.10   1540.62           11.00             848.42         3.26                0.00  3f  
- 120.74   39.91   1499.65           11.00             424.21         2.03                0.00  3f  
- 120.70   40.00   1778.09           11.00               0.00         3.00                0.00  3f  
- 120.61   40.16   1612.21           15.81               0.00         3.50                0.00  3f  
- 121.18   39.80   1669.78           17.54               0.00         6.23                0.00  3f  
- 120.34   40.13   1698.18           11.00               0.00         3.03                0.00  3f  
- 120.38   40.10   1835.58           12.61             324.50        11.81                0.00  4nf 
- 120.47   40.09   1819.99           25.31             324.52        14.32                0.00  4nf 
- 120.81   40.02   2161.92         -115.92             908.50        18.80                0.00  4nf 
- 120.51   39.96   1685.56           28.94               0.00        14.50                0.00  4nf 
- 120.40   39.98   1707.15         -269.03               0.00        13.71                0.00  4nf 
- 120.39   39.88   1825.43         -145.77             651.11        12.50                0.00  4nf 
- 120.48   40.02   1729.29           26.47               0.00        14.71                0.00  4nf 
- 120.70   40.04   1541.39           24.57             424.21        18.00                0.00  4nf 
- 120.75   40.03   1549.05           15.88            1068.61        17.64                0.00  4nf 
- 120.37   39.99   1781.29           11.00               0.00        16.00                0.00  4nf 
- 120.92   39.82   1844.33         -123.48             534.89        16.24                0.00  4nf 
- 120.31   39.99   2098.05           35.00             324.99        14.00                0.00  4nf 
- 120.82   40.20   1573.69           15.53               0.00        16.60                0.00  4f  
- 120.40   40.02   1831.06           16.00            1068.65        15.58                0.00  4f  
- 120.63   40.12   1509.80           14.60               0.00        15.48                0.00  4f  
- 120.36   39.90   1769.06           11.00             325.45        16.00                0.00  4f  
- 120.79   40.21   1609.06           16.00             774.45        18.00                0.00  4f  
- 120.52   40.17   1799.88           11.00               0.00        16.00                0.00  4f  
- 120.31   40.08   1815.86           27.02               0.00        14.66                0.00  4f  
- 120.50   40.17   1891.75           13.00               0.00        15.83                0.00  4f  
- 120.78   40.23   1735.03           16.00             323.87        10.90                0.00  4f  
- 120.55   40.15   1718.60           11.00               0.00        16.00                0.00  4f  
- 120.82   40.21   1580.65           13.54               0.00        10.62                0.00  4f  
- 120.31   40.09   1875.21           24.22               0.00        14.37                0.00  4f  
- 121.35   39.69    921.99           14.13               0.00         7.01                0.00  5nf 
- 121.33   39.71   1025.25           11.00             326.35         4.28                0.00  5nf 
- 121.03   39.56   1050.38           11.13             327.03         7.81                0.00  5nf 
- 121.41   39.69    401.41         -420.37            1295.80         8.19                0.00  5nf 
- 121.08   39.58   1217.57           11.00             326.94         3.00                0.00  5nf 
- 121.03   39.61   1330.10           11.06               0.00         3.18                0.00  5nf 
- 121.13   39.55   1154.84           11.00               0.00         3.00              327.09  5nf 
- 121.30   39.62    409.66           29.00             909.18         6.00                0.00  5nf 
- 121.40   39.69    607.77           26.58             778.64         6.00                0.00  5nf 
- 121.12   39.74   1467.85           13.83               0.00         4.13                0.00  5nf 
- 121.03   39.69   1485.10           14.02             424.21         5.41                0.00  5nf 
- 121.09   39.62   1197.35           11.00               0.00         3.00                0.00  5nf 
- 121.03   39.82   1120.74         -294.56            1065.58        10.04                0.00  5f  
- 121.16   39.78    858.63           21.24            1958.46         4.97                0.00  5f  
- 121.23   39.64   1163.32           11.00             778.94         4.62                0.00  5f  
- 121.24   40.06   1451.13           11.00               0.00         9.21                0.00  5f  
- 121.11   40.10   1179.25           11.00             775.33         3.00                0.00  5f  
- 121.33   39.87   1281.04           11.00             534.75         4.26                0.00  5f  
- 121.24   39.76   1383.27           14.01             424.21         6.21                0.00  5f  
- 121.30   39.97   1183.63           14.10            1292.77         5.68              325.12  5f  
- 121.16   39.80   1168.41           11.00             977.80         5.10                0.00  5f  
- 120.79   40.13   1282.01           15.03             424.21         8.44                0.00  5f  
- 121.19   40.12   1429.10           12.63             324.39         7.90                0.00  5f  
- 121.45   39.84   1103.40           12.92               0.00         8.75                0.00  5f  
+   Long     Lat    Height   Fire Interval   Distance to Road   Vegetation Type   Distance to Water  ID  
+-------  ------  --------  --------------  -----------------  ----------------  ------------------  ----
+ 120.91   39.98   1145.27           15.81             424.21             12.41                0.00  1nf 
+ 121.09   40.02    983.53           11.68               0.00             10.22                0.00  1nf 
+ 120.87   39.96   1237.23           25.68               0.00             12.37                0.00  1nf 
+ 121.00   39.94   1279.09           21.48               0.00             11.73                0.00  1nf 
+ 120.80   39.87   1424.25           15.16             424.21             15.47                0.00  1nf 
+ 121.38   39.75    797.21           21.40               0.00             18.00                0.00  1nf 
+ 120.82   40.08   1241.51           19.82               0.00             14.47                0.00  1nf 
+ 120.98   40.04   1010.16           26.50               0.00             18.00                0.00  1nf 
+ 121.40   39.67    757.34           17.29               0.00             10.82                0.00  1nf 
+ 120.64   40.10   1411.36           16.00               0.00             18.00                0.00  1nf 
+ 120.55   39.73   1428.79           12.89               0.00             16.76                0.00  1nf 
+ 120.99   40.04   1005.39           23.42               0.00             18.00                0.00  1nf 
+ 120.80   40.18   1280.15           16.42               0.00             17.61                0.00  1f  
+ 121.25   39.72    731.23           16.00               0.00             12.28                0.00  1f  
+ 121.25   39.66    946.98           14.42             848.42             13.27                0.00  1f  
+ 121.21   40.07   1098.96           19.60            1428.69             14.79                0.00  1f  
+ 121.22   40.11   1302.51           16.00             324.43             18.00                0.00  1f  
+ 120.84   40.19   1410.15           17.48             908.19             10.71                0.00  1f  
+ 121.22   40.11   1243.52           15.68               0.00             17.04                0.00  1f  
+ 121.42   39.83    584.98           16.00               0.00             10.43                0.00  1f  
+ 120.79   40.20   1393.51           16.00             533.80             18.00                0.00  1f  
+ 120.76   40.21   1335.86           14.71               0.00             14.14                0.00  1f  
+ 121.11   40.04   1039.99           20.12             534.28             18.00                0.00  1f  
+ 121.47   39.73    434.85           11.25               0.00              9.42                0.00  1f  
+ 120.71   39.93   2069.65            7.16               0.00              6.93                0.00  2nf 
+ 120.60   39.85   2004.34           16.00               0.00              4.29                0.00  2nf 
+ 121.13   39.87   1790.30           16.00             325.57              7.00                0.00  2nf 
+ 121.02   39.67   1580.89           16.00               0.00              6.93                0.00  2nf 
+ 120.39   40.05   1911.05           16.00             324.74              3.00                0.00  2nf 
+ 121.04   39.75   1771.12           16.00               0.00              6.54                0.00  2nf 
+ 121.03   40.14   1678.18           15.74               0.00              3.00                0.00  2nf 
+ 120.62   39.94   1859.34           14.79             325.26              3.00                0.00  2nf 
+ 120.60   40.23   1734.92           16.00               0.00              3.00                0.00  2nf 
+ 121.01   40.08   1725.45           15.74               0.00              5.79                0.00  2nf 
+ 120.68   39.77   1548.83           11.00               0.00              3.00                0.00  2nf 
+ 121.20   39.93   1906.07           16.00             650.64              7.00                0.00  2nf 
+ 121.14   40.15   1530.05           12.56             324.27              7.68                0.00  2f  
+ 120.72   40.23   1635.56           12.30               0.00              3.00                0.00  2f  
+ 120.64   40.16   1739.43           16.00             533.90              3.53                0.00  2f  
+ 120.26   40.10   1908.27           14.97             424.21              5.67                0.00  2f  
+ 120.84   40.21   1643.31           11.93               0.00              5.80                0.00  2f  
+ 120.79   39.85   1594.26           14.38               0.00              2.77                0.00  2f  
+ 120.26   39.85   1773.72           23.05               0.00              9.02                0.00  2f  
+ 121.22   39.92   1863.16           16.00             776.73              7.00                0.00  2f  
+ 120.29   40.12   1903.38           26.00             424.21              2.00                0.00  2f  
+ 121.11   39.83   1725.65           24.36             325.75              5.66                0.00  2f  
+ 120.61   40.09   1870.59           12.13               0.00              6.38                0.00  2f  
+ 121.29   39.86   1609.96           12.58               0.00              7.21                0.00  2f  
+ 120.63   40.07   1605.53           18.51             324.63             12.26              324.63  3nf 
+ 121.00   40.09   1706.44           11.00            1068.23              3.00              324.52  3nf 
+ 120.42   39.87   1798.85           12.92             325.59              9.18              325.59  3nf 
+ 120.61   40.00   2196.98           25.10               0.00              9.45              324.97  3nf 
+ 121.01   39.86   1747.54           16.00               0.00              7.00              325.64  3nf 
+ 121.13   40.00   1625.41           16.00             424.21              6.68              324.96  3nf 
+ 121.25   39.88   1504.05           14.05             325.52              3.00              325.52  3nf 
+ 120.64   39.92   2027.00           16.00               0.00              3.06              534.61  3nf 
+ 120.81   39.98   2005.92           13.70             534.43              5.16              325.05  3nf 
+ 121.04   40.00   1386.61           15.96               0.00              7.14              324.96  3nf 
+ 120.93   39.67   1575.38           15.33             326.53              6.04              326.53  3nf 
+ 121.14   39.82   1713.31           16.55               0.00              6.73              325.83  3nf 
+ 121.10   40.11   1269.03           19.21               0.00             10.98              324.45  3f  
+ 121.05   40.13   1858.57           11.24               0.00              3.00              324.32  3f  
+ 121.22   39.98   1938.91           18.01            1068.89              5.99              325.07  3f  
+ 121.39   39.82   1249.11           11.00               0.00              3.08              325.81  3f  
+ 121.21   39.98   1919.29           21.99            1292.65              4.01              325.07  3f  
+ 120.70   39.98   1915.46           15.85             325.07              3.03              424.21  3f  
+ 121.34   39.93   1385.62           11.00             325.28              8.35              325.28  3f  
+ 121.47   39.88   1256.71           11.00               0.00              4.00              325.55  3f  
+ 121.31   39.89   1479.87           13.17               0.00              4.51              325.46  3f  
+ 120.31   40.10   1986.92           26.10             648.93              2.13              324.47  3f  
+ 120.63   39.82   1790.49           16.00               0.00              5.12              325.83  3f  
+ 120.76   40.15   1933.48           14.80               0.00              3.00              424.21  3f  
+ 120.49   40.10   1773.75           35.00             324.50             14.00                0.00  4nf 
+ 120.64   40.09   1469.14           16.00             324.52             18.00                0.00  4nf 
+ 120.70   40.02   1577.16           15.49               0.00             15.41                0.00  4nf 
+ 120.42   39.96   1690.96           35.00             325.14             14.00                0.00  4nf 
+ 120.75   39.98   2092.74           40.00             325.05             20.00              325.05  4nf 
+ 120.69   39.88   1510.62           13.94             424.21             10.52                0.00  4nf 
+ 120.47   40.02   1737.61           12.87             324.85             15.84                0.00  4nf 
+ 120.68   40.04   1611.01           16.00             424.21             18.00                0.00  4nf 
+ 120.64   40.03   1529.61           16.00             534.28             18.00                0.00  4nf 
+ 120.63   39.99   2359.56           40.00               0.00             20.00                0.00  4nf 
+ 120.53   39.82   1661.37           12.19             651.61             12.91                0.00  4nf 
+ 120.64   39.99   2320.65           40.00               0.00             20.00              424.21  4nf 
+ 120.84   40.20   1472.90           16.00             533.80             12.97                0.00  4f  
+ 121.27   40.04   1500.33           11.00            2598.20             12.00                0.00  4f  
+ 120.36   40.13   1839.87           11.00               0.00             16.00              324.36  4f  
+ 120.32   39.92   1902.04           20.98             325.36             15.17                0.00  4f  
+ 120.80   40.21   1692.60           16.00             533.77             18.00                0.00  4f  
+ 120.61   40.17   1566.06           12.06             324.14             13.24                0.00  4f  
+ 121.19   40.09   1501.27           16.00             775.39             18.00                0.00  4f  
+ 120.50   40.17   1797.37           11.00             324.16             16.00                0.00  4f  
+ 120.81   40.23   1688.66           11.18               0.00             12.09                0.00  4f  
+ 120.53   40.15   1786.37           11.00             533.95             16.00                0.00  4f  
+ 120.83   40.21   1596.95           15.20             323.96             15.59                0.00  4f  
+ 120.57   40.10   1743.04           13.82             534.09             13.37                0.00  4f  
+ 121.30   39.69   1080.55           11.00               0.00              4.03                0.00  5nf 
+ 120.93   39.71   1498.99           18.44               0.00             10.10                0.00  5nf 
+ 121.10   39.56   1112.92           11.00               0.00              3.00                0.00  5nf 
+ 121.33   39.69   1048.93           12.70               0.00              6.91                0.00  5nf 
+ 121.09   39.58   1184.67           11.00               0.00              3.00                0.00  5nf 
+ 121.12   39.61   1190.37           11.44             326.84              4.33                0.00  5nf 
+ 121.04   39.56    978.13           14.24             327.07              4.29                0.00  5nf 
+ 120.97   39.62   1471.53           12.09               0.00              3.87                0.00  5nf 
+ 121.32   39.69   1074.36           16.00               0.00              8.59                0.00  5nf 
+ 121.32   39.73    836.37           16.00             326.22              6.30                0.00  5nf 
+ 121.41   39.69    411.05           28.93            1295.72              6.00                0.00  5nf 
+ 121.10   39.62   1218.67           11.00               0.00              3.00                0.00  5nf 
+ 121.38   39.81   1330.66           13.70             424.21              6.96                0.00  5f  
+ 121.20   39.77   1376.71           11.00             326.06              3.00                0.00  5f  
+ 121.33   39.64    817.93           11.35             778.97              9.58                0.00  5f  
+ 121.16   40.10   1423.66           11.00             324.48              2.96                0.00  5f  
+ 121.20   40.12   1378.12           11.61               0.00              5.78                0.00  5f  
+ 121.41   39.86   1139.16           11.00             534.77              3.00                0.00  5f  
+ 121.33   39.75    985.38           16.00               0.00              8.88                0.00  5f  
+ 121.16   40.02    989.16           11.00             424.21              9.00                0.00  5f  
+ 121.46   39.78    595.00           29.00               0.00              6.00                0.00  5f  
+ 121.16   40.14   1364.65           11.32             324.30              3.96                0.00  5f  
+ 121.14   40.13   1477.32           11.00               0.00              3.00                0.00  5f  
+ 120.99   39.84   1154.46           12.43             651.47              3.97                0.00  5f  
 
 
-```r
-summary(Vegetation_existing)
-```
 
-```
-##               band1
-## Min.        1.00000
-## 1st Qu.     4.00000
-## Median      7.00000
-## 3rd Qu.    13.49004
-## Max.       25.56028
-## NA's    64040.00000
-```
+Table: Simulated Sampling values
 
-```r
-str(Vegetation_existing)
-```
+           night1   night2   night3
+--------  -------  -------  -------
+s1.1nf          1        0        1
+s2.1nf          1        1        1
+s3.1nf          1        1        1
+s4.1nf          1        1        1
+s5.1nf          1        1        1
+s6.1nf          1        1        0
+s7.1nf          1        1        1
+s8.1nf          1        1        1
+s9.1nf          1        1        0
+s10.1nf         1        0        1
+s11.1nf         0        1        1
+s12.1nf         1        1        1
+s1.1f           0        1        1
+s2.1f           1        0        0
+s3.1f           1        1        1
+s4.1f           1        1        1
+s5.1f           1        1        1
+s6.1f           1        1        1
+s7.1f           1        0        1
+s8.1f           1        1        1
+s9.1f           1        1        0
+s10.1f          0        1        1
+s11.1f          1        1        0
+s12.1f          1        1        1
+s1.2nf          0        0        1
+s2.2nf          1        0        0
+s3.2nf          1        0        1
+s4.2nf          1        1        1
+s5.2nf          1        1        1
+s6.2nf          1        1        1
+s7.2nf          1        1        0
+s8.2nf          1        1        1
+s9.2nf          0        0        1
+s10.2nf         0        0        1
+s11.2nf         1        1        0
+s12.2nf         0        1        1
+s1.2f           1        1        0
+s2.2f           1        1        1
+s3.2f           0        1        1
+s4.2f           0        1        0
+s5.2f           0        1        1
+s6.2f           1        1        1
+s7.2f           1        1        0
+s8.2f           0        0        0
+s9.2f           0        0        1
+s10.2f          1        0        0
+s11.2f          1        0        1
+s12.2f          0        0        0
+s1.3nf          1        1        0
+s2.3nf          0        1        0
+s3.3nf          0        1        0
+s4.3nf          0        1        1
+s5.3nf          1        0        1
+s6.3nf          1        0        1
+s7.3nf          1        1        1
+s8.3nf          1        0        0
+s9.3nf          1        0        1
+s10.3nf         0        1        1
+s11.3nf         1        1        0
+s12.3nf         1        0        1
+s1.3f           1        1        0
+s2.3f           1        1        0
+s3.3f           1        0        0
+s4.3f           0        0        0
+s5.3f           0        0        0
+s6.3f           1        0        1
+s7.3f           1        1        0
+s8.3f           0        0        1
+s9.3f           1        1        0
+s10.3f          0        0        0
+s11.3f          0        0        1
+s12.3f          0        1        1
+s1.4nf          1        1        0
+s2.4nf          0        0        0
+s3.4nf          0        0        0
+s4.4nf          0        1        0
+s5.4nf          0        0        1
+s6.4nf          1        0        1
+s7.4nf          0        0        0
+s8.4nf          0        0        0
+s9.4nf          0        0        1
+s10.4nf         1        0        0
+s11.4nf         0        0        0
+s12.4nf         0        1        1
+s1.4f           0        1        0
+s2.4f           1        1        0
+s3.4f           1        0        0
+s4.4f           0        0        0
+s5.4f           0        0        0
+s6.4f           0        0        0
+s7.4f           1        0        0
+s8.4f           0        0        0
+s9.4f           1        1        0
+s10.4f          0        1        0
+s11.4f          1        0        1
+s12.4f          0        0        0
+s1.5nf          1        0        0
+s2.5nf          0        0        0
+s3.5nf          0        0        0
+s4.5nf          0        0        0
+s5.5nf          1        0        0
+s6.5nf          0        0        0
+s7.5nf          0        0        0
+s8.5nf          0        0        0
+s9.5nf          0        0        0
+s10.5nf         0        0        0
+s11.5nf         0        0        1
+s12.5nf         0        0        0
+s1.5f           0        0        0
+s2.5f           0        0        0
+s3.5f           1        0        0
+s4.5f           1        0        0
+s5.5f           1        0        0
+s6.5f           0        0        0
+s7.5f           0        0        1
+s8.5f           0        0        0
+s9.5f           0        0        0
+s10.5f          0        0        0
+s11.5f          1        0        1
+s12.5f          0        0        0
 
-```
-## Formal class 'RasterLayer' [package "raster"] with 12 slots
-##   ..@ file    :Formal class '.RasterFile' [package "raster"] with 13 slots
-##   .. .. ..@ name        : chr ""
-##   .. .. ..@ datanotation: chr "FLT4S"
-##   .. .. ..@ byteorder   : chr "little"
-##   .. .. ..@ nodatavalue : num -Inf
-##   .. .. ..@ NAchanged   : logi FALSE
-##   .. .. ..@ nbands      : int 1
-##   .. .. ..@ bandorder   : chr "BIL"
-##   .. .. ..@ offset      : int 0
-##   .. .. ..@ toptobottom : logi TRUE
-##   .. .. ..@ blockrows   : int 0
-##   .. .. ..@ blockcols   : int 0
-##   .. .. ..@ driver      : chr ""
-##   .. .. ..@ open        : logi FALSE
-##   ..@ data    :Formal class '.SingleLayerData' [package "raster"] with 13 slots
-##   .. .. ..@ values    : num [1:108500] NA NA NA NA NA NA NA NA NA NA ...
-##   .. .. ..@ offset    : num 0
-##   .. .. ..@ gain      : num 1
-##   .. .. ..@ inmemory  : logi TRUE
-##   .. .. ..@ fromdisk  : logi FALSE
-##   .. .. ..@ isfactor  : logi FALSE
-##   .. .. ..@ attributes: list()
-##   .. .. ..@ haveminmax: logi TRUE
-##   .. .. ..@ min       : num 1
-##   .. .. ..@ max       : num 25.6
-##   .. .. ..@ band      : int 1
-##   .. .. ..@ unit      : chr ""
-##   .. .. ..@ names     : chr "band1"
-##   ..@ legend  :Formal class '.RasterLegend' [package "raster"] with 5 slots
-##   .. .. ..@ type      : chr(0) 
-##   .. .. ..@ values    : logi(0) 
-##   .. .. ..@ color     : logi(0) 
-##   .. .. ..@ names     : logi(0) 
-##   .. .. ..@ colortable: logi(0) 
-##   ..@ title   : chr(0) 
-##   ..@ extent  :Formal class 'Extent' [package "raster"] with 4 slots
-##   .. .. ..@ xmin: num -122
-##   .. .. ..@ xmax: num -120
-##   .. .. ..@ ymin: num 39.4
-##   .. .. ..@ ymax: num 40.3
-##   ..@ rotated : logi FALSE
-##   ..@ rotation:Formal class '.Rotation' [package "raster"] with 2 slots
-##   .. .. ..@ geotrans: num(0) 
-##   .. .. ..@ transfun:function ()  
-##   ..@ ncols   : int 434
-##   ..@ nrows   : int 250
-##   ..@ crs     :Formal class 'CRS' [package "sp"] with 1 slot
-##   .. .. ..@ projargs: chr "+proj=longlat +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +no_defs"
-##   ..@ history : list()
-##   ..@ z       : list()
-```
-
-```r
-names(Vegetation_existing)
-```
-
-```
-## [1] "band1"
-```
 

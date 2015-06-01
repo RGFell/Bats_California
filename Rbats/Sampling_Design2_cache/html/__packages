@@ -13,3 +13,5 @@ Rcpp
 unmarked
 knitr
 dplyr
+foreign
+shapefiles
